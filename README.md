@@ -73,8 +73,7 @@ cardView.setAdapter(new CardViewLayout.Adapter() {
 
 ## 3.图片展示
 - 3.1 案例展示
-- ![image](https://github.com/yangchong211/image/blob/master/image/slideview/ycslideview.gif)
-- ![image](https://github.com/yangchong211/image/blob/master/image/slideview/state.gif)
+- ![image](https://github.com/yangchong211/image/blob/master/image/slideview/yccardview.gif)
 
 ## 4.其他介绍
 **4.1版本更新说明**
