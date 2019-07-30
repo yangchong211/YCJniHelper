@@ -30,5 +30,13 @@
         android:padding="10dp"
         android:text="2.自定义背景的视图"/>
 
+    <TextView
+        android:id="@+id/tv_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="3.高效的自定义阴影背景效果的控件"/>
 
 </LinearLayout>
