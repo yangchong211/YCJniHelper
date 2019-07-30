@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.ns.yc.yccardview.first.FirstActivity;
+import com.ns.yc.yccardview.second.SecondActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void init() {
         findViewById(R.id.tv_1).setOnClickListener(this);
+        findViewById(R.id.tv_2).setOnClickListener(this);
     }
 
     @Override
@@ -25,6 +27,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.tv_1:
                 startActivity(new Intent(this, FirstActivity.class));
+                break;
+            case R.id.tv_2:
+                startActivity(new Intent(this, SecondActivity.class));
+                break;
+            default:
                 break;
         }
     }

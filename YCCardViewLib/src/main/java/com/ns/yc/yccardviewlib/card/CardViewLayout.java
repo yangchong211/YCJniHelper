@@ -1,4 +1,4 @@
-package com.ns.yc.yccardviewlib;
+package com.ns.yc.yccardviewlib.card;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -14,6 +14,8 @@ import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+
+import com.ns.yc.yccardviewlib.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -237,6 +239,8 @@ public class CardViewLayout extends ViewGroup {
                 // ACTION_UP还能拦截，说明手指没滑动，只是一个click事件，同样需要snap到特定位置
                 onRelease(event.getX(), 0);
                 break;
+            default:
+                break;
         }
         return false; // 默认都是不拦截的
     }
@@ -265,6 +269,8 @@ public class CardViewLayout extends ViewGroup {
                 recycleVelocityTracker();
 
                 onRelease(event.getX(), velocity);
+                break;
+            default:
                 break;
         }
         return true;

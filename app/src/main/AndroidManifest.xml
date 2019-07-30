@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ns.yc.yccardview">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.ns.yc.yccardview">
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -16,6 +18,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".first.FirstActivity"/>
+        <activity android:name=".second.SecondActivity"/>
+        <activity android:name=".second.CardViewActivity"/>
+        <activity android:name=".second.ShadowViewActivity"/>
+        <activity android:name=".second.ShadowViewDemo2Activity"/>
+        <activity android:name=".second.ShadowViewDemo3Activity"/>
     </application>
 
 </manifest>

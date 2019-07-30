@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ns.yc.yccardview.R;
-import com.ns.yc.yccardviewlib.CardViewLayout;
+import com.ns.yc.yccardviewlib.card.CardViewLayout;
 
 import java.util.ArrayList;
 

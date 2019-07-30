@@ -13,7 +13,7 @@
 
 - **1.2 在布局中，如下所示**
 ```
-    <com.ns.yc.yccardviewlib.CardViewLayout
+    <com.ns.yc.yccardviewlib.card.CardViewLayout
         android:id="@+id/cardView"
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
