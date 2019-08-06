@@ -136,7 +136,7 @@
 - 在createShadowBitmap方法中，其实也可以看到需要创建bitmap对象。大家都知道bitmap比较容易造成内存过大，如果是给recyclerView中的item设置阴影效果，那么如何避免重复创建，这时候可以用到缓存。所以可以在上面的基础上再优化一下代码。
 - 先创建key，主要是用于map集合的键。这里为何用对象Key作为map的键呢，这里是借鉴了glide缓存图片的思路，可以创建Key对象的时候传入bitmap名称和宽高属性，并且需要重写hashCode和equals方法。
 - 然后存取操作，在查找的时候，通过Key进行查找。注意：Bitmap需要同时满足三个条件（高度、宽度、名称）都相同时才能算是同一个 Bitmap。
-
+- 更加详细的内容，可以看这篇博客：https://juejin.im/post/5d495cfef265da03a31d1fba
 
 
 ### 其他介绍
