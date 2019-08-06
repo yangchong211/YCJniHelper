@@ -283,6 +283,8 @@ public class ShadowViewActivity extends AppCompatActivity {
                             }
                         });
                         break;
+                        default:
+                            break;
                 }
             }
         }
@@ -346,6 +348,8 @@ public class ShadowViewActivity extends AppCompatActivity {
                             });
                         }
                         break;
+                        default:
+                            break;
                 }
             }
 

@@ -21,8 +21,7 @@
         <activity android:name=".second.SecondActivity"/>
         <activity android:name=".second.CardViewActivity"/>
         <activity android:name=".second.ShadowViewActivity"/>
-        <activity android:name=".second.ShadowViewDemo2Activity"/>
-        <activity android:name=".second.ShadowViewDemo3Activity"/>
+        <activity android:name=".three.ShadowViewDemo3Activity"/>
     </application>
 
 </manifest>

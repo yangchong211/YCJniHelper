@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.ns.yc.yccardview.R;
+import com.ns.yc.yccardview.three.ShadowViewDemo3Activity;
 
 public class SecondActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -16,7 +17,6 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
 
         findViewById(R.id.text_card).setOnClickListener(this);
         findViewById(R.id.text_shadow_view).setOnClickListener(this);
-        findViewById(R.id.text_shadow_view2).setOnClickListener(this);
         findViewById(R.id.text_shadow_view3).setOnClickListener(this);
     }
 
@@ -28,9 +28,6 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.text_shadow_view:
                 startActivity(new Intent(this, ShadowViewActivity.class));
-                break;
-            case R.id.text_shadow_view2:
-                startActivity(new Intent(this, ShadowViewDemo2Activity.class));
                 break;
             case R.id.text_shadow_view3:
                 startActivity(new Intent(this, ShadowViewDemo3Activity.class));

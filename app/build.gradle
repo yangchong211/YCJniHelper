@@ -28,7 +28,7 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:27.0.0"
     implementation "com.android.support.constraint:constraint-layout:1.1.3"
     implementation "com.google.android:flexbox:0.3.0"
-    compile project(':YCCardViewLib')
-    //compile 'cn.yc:YCCardViewLib:1.1'
+    implementation project(':YCCardViewLib')
+    //implementation 'cn.yc:YCCardViewLib:1.2.1'
 }
 

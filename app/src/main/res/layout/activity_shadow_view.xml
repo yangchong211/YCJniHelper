@@ -22,8 +22,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Google Developer Days Europe 2017 took place in Krakow, Poland. In this playlist, you can find all the recorded sessions from the event, across all tracks (Develop on Mobile, Mobile Web, Beyond Mobile, and Android)." />
-
+                android:textSize="14sp"
+                android:text="可以自定义阴影的控件，设置圆角，阴影颜色，偏移量等等属性。功能十分强大，好用！可以自定义阴影的控件，设置圆角，阴影颜色，偏移量等等属性。功能十分强大，好用！"/>
         </RelativeLayout>
 
 

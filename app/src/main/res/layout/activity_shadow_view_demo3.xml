@@ -27,7 +27,7 @@
                 android:layout_height="45dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="阴影控件，让你的UI不再费事"
+                android:text="阴影控件，效果图如下所示"
                 android:textColor="#ff0000"
                 android:textSize="15dp"
                 android:textStyle="bold" />
@@ -54,7 +54,7 @@
                     android:gravity="center"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:text="圆角"
+                    android:text="直角控件阴影"
                     android:textColor="#000" />
             </RelativeLayout>
 
@@ -65,7 +65,6 @@
         <com.ns.yc.yccardviewlib.shadow.ShadowLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             app:yc_cornerRadius="18dp"
             app:yc_dx="0dp"
@@ -89,7 +88,6 @@
         <com.ns.yc.yccardviewlib.shadow.ShadowLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             app:yc_cornerRadius="18dp"
             app:yc_dx="0dp"
@@ -113,7 +111,6 @@
         <com.ns.yc.yccardviewlib.shadow.ShadowLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             app:yc_cornerRadius="18dp"
             app:yc_dx="0dp"
@@ -136,7 +133,6 @@
         <com.ns.yc.yccardviewlib.shadow.ShadowLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             app:yc_cornerRadius="18dp"
             app:yc_dx="0dp"
@@ -159,7 +155,6 @@
         <com.ns.yc.yccardviewlib.shadow.ShadowLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             app:yc_cornerRadius="18dp"
             app:yc_dx="5dp"
@@ -182,7 +177,6 @@
         <com.ns.yc.yccardviewlib.shadow.ShadowLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             app:yc_cornerRadius="18dp"
             app:yc_dx="0dp"
@@ -205,7 +199,6 @@
         <com.ns.yc.yccardviewlib.shadow.ShadowLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             app:yc_cornerRadius="18dp"
             app:yc_leftShow="false"

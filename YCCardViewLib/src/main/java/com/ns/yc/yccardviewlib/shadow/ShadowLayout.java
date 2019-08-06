@@ -10,9 +10,12 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.ns.yc.yccardviewlib.R;
+
+import java.util.HashMap;
 
 /**
  * <pre>
@@ -84,6 +87,12 @@ public class ShadowLayout extends FrameLayout {
 
     private boolean mInvalidateShadowOnSizeChanged = true;
     private boolean mForceInvalidateShadow = false;
+
+    /**
+     * 缓存
+     */
+    private final HashMap<Key, Bitmap> cache = new HashMap<>();
+
 
     public ShadowLayout(Context context) {
         super(context);
@@ -221,7 +230,19 @@ public class ShadowLayout extends FrameLayout {
                                       float shadowRadius, float dx, float dy,
                                       int shadowColor, int fillColor) {
 
-        Bitmap output = Bitmap.createBitmap(shadowWidth, shadowHeight, Bitmap.Config.ARGB_8888);
+        Key key = new Key("bitmap", shadowWidth, shadowHeight);
+        Bitmap output = cache.get(key);
+        if(output == null){
+            //根据宽高创建bitmap背景
+            output = Bitmap.createBitmap(shadowWidth, shadowHeight, Bitmap.Config.ARGB_4444);
+            cache.put(key, output);
+            //Log.v("bitmap对象-----","----直接创建对象，然后存入缓存之中---");
+        } else {
+            //Log.v("bitmap对象-----","----从缓存中取出对象---");
+        }
+        int size = cache.size();
+        //Log.v("bitmap对象-----","----缓存数量---"+size);
+
         Canvas canvas = new Canvas(output);
 
         RectF shadowRect = new RectF(shadowRadius, shadowRadius,
@@ -243,15 +264,72 @@ public class ShadowLayout extends FrameLayout {
             shadowRect.right -= Math.abs(dx);
         }
 
+        //创建画笔，设置画笔的颜色，风格
         Paint shadowPaint = new Paint();
         shadowPaint.setAntiAlias(true);
         shadowPaint.setColor(fillColor);
         shadowPaint.setStyle(Paint.Style.FILL);
+
         if (!isInEditMode()) {
             shadowPaint.setShadowLayer(shadowRadius, dx, dy, shadowColor);
         }
         canvas.drawRoundRect(shadowRect, cornerRadius, cornerRadius, shadowPaint);
         return output;
     }
+
+
+
+
+    public class Key {
+
+        private final String name;
+        private final int width;
+        private final int height;
+
+        public Key(String name, int width, int height) {
+            this.name = name;
+            this.width = width;
+            this.height = height;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            Key key = (Key) o;
+            if (width != key.width) {
+                return false;
+            }
+            if (height != key.height) {
+                return false;
+            }
+            return name != null ? name.equals(key.name) : key.name == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = name != null ? name.hashCode() : 0;
+            result = 31 * result + width;
+            result = 31 * result + height;
+            return result;
+        }
+    }
+
 
 }

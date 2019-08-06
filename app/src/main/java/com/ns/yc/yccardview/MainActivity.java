@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.ns.yc.yccardview.first.FirstActivity;
 import com.ns.yc.yccardview.second.SecondActivity;
-import com.ns.yc.yccardview.second.ShadowViewDemo3Activity;
+import com.ns.yc.yccardview.three.ShadowViewDemo3Activity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
