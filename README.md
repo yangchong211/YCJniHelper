@@ -139,8 +139,6 @@
 - 更加详细的内容，可以看这篇博客：https://juejin.im/post/5d495cfef265da03a31d1fba
 
 
-### 其他介绍
-- 参考项目：https://github.com/lihangleo2/ShadowLayout
 
 #### 01.关于博客汇总链接
 - 1.[技术博客汇总](https://www.jianshu.com/p/614cb839182c)
