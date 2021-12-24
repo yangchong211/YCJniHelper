@@ -105,7 +105,7 @@
 ### 05.如何使用该阴影控件
 - 十分简单，如下所示
     ```
-    <com.ns.yc.yccardviewlib.shadow.ShadowLayout
+    <com.yc.shadow.ShadowLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -126,7 +126,7 @@
             android:text="完全圆形圆角"
             android:textColor="#000" />
     
-    </com.ns.yc.yccardviewlib.shadow.ShadowLayout>
+    </com.yc.shadow.ShadowLayout>
     ```
 
 
