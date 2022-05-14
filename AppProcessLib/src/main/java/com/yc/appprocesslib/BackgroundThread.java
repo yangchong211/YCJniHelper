@@ -11,6 +11,7 @@ import android.os.Looper;
  * @time : 2018/04/15
  * @desc : Shared singleton background thread for each process.
  * @revise :
+ * GitHub : https://github.com/yangchong211/YCEfficient
  */
 public final class BackgroundThread extends HandlerThread {
 

@@ -6,6 +6,7 @@ package com.yc.appprocesslib;
  * @time : 2018/04/15
  * @desc : 前后台监听listener
  * @revise :
+ * GitHub : https://github.com/yangchong211/YCEfficient
  */
 public interface StateListener {
 

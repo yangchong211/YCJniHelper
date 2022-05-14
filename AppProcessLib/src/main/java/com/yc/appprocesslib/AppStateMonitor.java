@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @time : 2018/04/15
  * @desc : 前后台监听
  * @revise :
+ * GitHub : https://github.com/yangchong211/YCEfficient
  */
 public class AppStateMonitor implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
 
