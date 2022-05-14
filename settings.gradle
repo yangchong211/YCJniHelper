@@ -1,2 +1,3 @@
-include ':app', ':CardViewLib'
-include ':ShadowConfig'
+include ':app'
+include ':AppProcessLib'
+include ':AutoCloserLib'

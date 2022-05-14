@@ -1,6 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
+apply from: "yc.gradle"
 buildscript {
+    apply from: "yc.gradle"
     repositories {
         google()
         jcenter()
