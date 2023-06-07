@@ -43,14 +43,14 @@ CMAKE SERVER: {
     "-DCMAKE_TOOLCHAIN_FILE\u003d/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/build/cmake/android.toolchain.cmake",
     "-DANDROID_ABI\u003dx86",
     "-DANDROID_NDK\u003d/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462",
-    "-DANDROID_PLATFORM\u003dandroid-17",
+    "-DANDROID_PLATFORM\u003dandroid-21",
     "-DCMAKE_ANDROID_ARCH_ABI\u003dx86",
     "-DCMAKE_ANDROID_NDK\u003d/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462",
     "-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON",
     "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003d/Users/yc/github/YCJniHelper/EpicJniLib/build/intermediates/cmake/debug/obj/x86",
     "-DCMAKE_MAKE_PROGRAM\u003d/Users/yangchong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
     "-DCMAKE_SYSTEM_NAME\u003dAndroid",
-    "-DCMAKE_SYSTEM_VERSION\u003d17"
+    "-DCMAKE_SYSTEM_VERSION\u003d21"
   ]
 }
 

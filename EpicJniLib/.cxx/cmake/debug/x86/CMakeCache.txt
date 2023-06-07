@@ -21,7 +21,7 @@ ANDROID_ABI:UNINITIALIZED=x86
 ANDROID_NDK:UNINITIALIZED=/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462
 
 //No help, variable specified on the command line.
-ANDROID_PLATFORM:UNINITIALIZED=android-17
+ANDROID_PLATFORM:UNINITIALIZED=android-21
 
 //No help, variable specified on the command line.
 CMAKE_ANDROID_ARCH_ABI:UNINITIALIZED=x86
@@ -202,7 +202,7 @@ CMAKE_STRIP:FILEPATH=/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/toolc
 CMAKE_SYSTEM_NAME:UNINITIALIZED=Android
 
 //No help, variable specified on the command line.
-CMAKE_SYSTEM_VERSION:UNINITIALIZED=17
+CMAKE_SYSTEM_VERSION:UNINITIALIZED=21
 
 //The CMake toolchain file
 CMAKE_TOOLCHAIN_FILE:FILEPATH=/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/build/cmake/android.toolchain.cmake
@@ -220,10 +220,10 @@ Project_BINARY_DIR:STATIC=/Users/yc/github/YCJniHelper/EpicJniLib/.cxx/cmake/deb
 Project_SOURCE_DIR:STATIC=/Users/yc/github/YCJniHelper/EpicJniLib/src/main/cpp
 
 //Dependencies for the target
-epic_LIB_DEPENDS:STATIC=general;/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/17/liblog.so;
+epic_LIB_DEPENDS:STATIC=general;/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/21/liblog.so;
 
 //Path to a library.
-log-lib:FILEPATH=/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/17/liblog.so
+log-lib:FILEPATH=/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/21/liblog.so
 
 
 ########################

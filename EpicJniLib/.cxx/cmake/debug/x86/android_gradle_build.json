@@ -1,7 +1,7 @@
 {
   "stringTable": {
     "0": "/Users/yc/github/YCJniHelper/EpicJniLib/.cxx/cmake/debug/x86",
-    "1": "--target=i686-none-linux-android17 --gcc-toolchain=/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Depic_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -std=c++11 -O0 -fno-limit-debug-info -fPIC"
+    "1": "--target=i686-none-linux-android21 --gcc-toolchain=/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/yangchong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Depic_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -std=c++11 -O0 -fno-limit-debug-info -fPIC"
   },
   "buildFiles": [
     "/Users/yc/github/YCJniHelper/EpicJniLib/src/main/cpp/CMakeLists.txt",

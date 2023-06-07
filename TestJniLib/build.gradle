@@ -1,16 +1,16 @@
+//plugins {id 'com.android.library'}
 apply plugin: 'com.android.library'
+
 
 android {
     compileSdkVersion 29
+//    buildToolsVersion '29.0.0'
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 17
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
         ndk {
             // Specifies the ABI configurations of your native
             // libraries Gradle should build and package with your APK.
@@ -18,11 +18,11 @@ android {
         }
         externalNativeBuild {
             cmake {
-                cppFlags "-std=c++11"
-                // arguments "-DANDROID_TOOLCHAIN=gcc"
+                cppFlags ""
             }
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -31,22 +31,17 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path 'src/main/cpp/CMakeLists.txt'
+            path "src/main/cpp/CMakeLists.txt"
         }
-    }
-    lintOptions {
-        abortOnError false
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildToolsVersion '29.0.0'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.github.tiann:FreeReflection:3.1.0"
-    api 'me.weishu.exposed:exposed-xposedapi:0.4.5'
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
 }
-

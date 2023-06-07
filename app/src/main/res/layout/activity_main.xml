@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
         android:padding="10dp"
-        android:text="1.左右可以滑动的卡片效果"/>
+        android:text="1.最简单的jni案例调试"/>
 
     <TextView
         android:id="@+id/tv_2"
@@ -28,7 +28,7 @@
         android:background="@color/colorAccent"
         android:layout_marginTop="10dp"
         android:padding="10dp"
-        android:text="2.自定义背景的视图"/>
+        android:text="2."/>
 
     <TextView
         android:id="@+id/tv_3"
@@ -37,6 +37,15 @@
         android:background="@color/colorAccent"
         android:layout_marginTop="10dp"
         android:padding="10dp"
-        android:text="3.高效的自定义阴影背景效果的控件"/>
+        android:text="3."/>
+
+    <TextView
+        android:id="@+id/tv_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text=""/>
 
 </LinearLayout>

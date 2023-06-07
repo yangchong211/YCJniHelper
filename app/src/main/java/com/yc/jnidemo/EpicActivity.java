@@ -1,13 +1,9 @@
 package com.yc.jnidemo;
 
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import de.robv.android.xposed.DexposedBridge;
-import de.robv.android.xposed.XC_MethodHook;
 
 
 public class EpicActivity extends AppCompatActivity {
@@ -18,28 +14,28 @@ public class EpicActivity extends AppCompatActivity {
     }
 
 
-    public static void findAndHookMethod() {
-        try {
-            Class<?> targetClass = TelephonyManager.class;
-            String targetMethod = "getDeviceId";
-            Object[] paramsWithDefaultHandler = {int.class};
-            //核心方法
-            DexposedBridge.findAndHookMethod(targetClass, targetMethod, paramsWithDefaultHandler);
-            //核心方法
-            DexposedBridge.findAndHookMethod(targetClass, targetMethod, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
-                }
-
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                }
-            });
-        } catch (NoSuchMethodError error) {
-            error.printStackTrace();
-        }
-    }
+//    public static void findAndHookMethod() {
+//        try {
+//            Class<?> targetClass = TelephonyManager.class;
+//            String targetMethod = "getDeviceId";
+//            Object[] paramsWithDefaultHandler = {int.class};
+//            //核心方法
+//            DexposedBridge.findAndHookMethod(targetClass, targetMethod, paramsWithDefaultHandler);
+//            //核心方法
+//            DexposedBridge.findAndHookMethod(targetClass, targetMethod, new XC_MethodHook() {
+//                @Override
+//                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                    super.beforeHookedMethod(param);
+//                }
+//
+//                @Override
+//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                    super.afterHookedMethod(param);
+//                }
+//            });
+//        } catch (NoSuchMethodError error) {
+//            error.printStackTrace();
+//        }
+//    }
 
 }
