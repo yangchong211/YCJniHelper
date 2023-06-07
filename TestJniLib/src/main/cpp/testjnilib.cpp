@@ -3,9 +3,18 @@
 #include "testjnilib.h"
 
 //java中stringFromJNI
-extern "C" JNIEXPORT jstring JNICALL
+//extern “C”    指定以"C"的方式来实现native函数
+extern "C"
+//JNIEXPORT     宏定义，用于指定该函数是JNI函数。表示此函数可以被外部调用，在Android开发中不可省略
+JNIEXPORT jstring
+//JNICALL       宏定义，用于指定该函数是JNI函数。，无实际意义，但是不可省略
+JNICALL
 //以注意到jni的取名规则，一般都是包名 + 类名，jni方法只是在前面加上了Java_，并把包名和类名之间的.换成了_
 Java_com_yc_testjnilib_NativeLib_stringFromJNI(JNIEnv *env, jobject /* this */) {
+    //JNIEnv 代表了JNI的环境，只要在本地代码中拿到了JNIEnv和jobject
+    //JNI层实现的方法都是通过JNIEnv 指针调用JNI层的方法访问Java虚拟机，进而操作Java对象，这样就能调用Java代码。
+    //jobject thiz
+    //在AS中自动为我们生成的JNI方法声明都会带一个这样的参数，这个instance就代表Java中native方法声明所在的
     std::string hello = "Hello from C++";
     //思考一下，为什么直接返回字符串会出现错误提示？
     //return "hello";

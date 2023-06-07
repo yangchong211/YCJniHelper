@@ -12,9 +12,12 @@
     - 3.1 JNI三种引用
     - 3.2 JNI异常处理
     - 3.3 C和C++互相调用
+    - 3.4 JNI核心原理
+    - 3.5 注册Native函数
 - 04.实践几个案例
-    - 4.1 N调用J方法
-    - 4.2 N调用so中API
+    - 4.1 Java调用C/C++
+    - 4.2 C/C++调用Java
+    - 4.3 Java调用so中API
 
 
 
@@ -147,23 +150,21 @@
     - JNI（全名Java Native Interface）Java native接口，其可以让一个运行在Java虚拟机中的Java代码被调用或者调用native层的用C/C++编写的基于本机硬件和操作系统的程序。简单理解为就是一个连接Java层和Native层的桥梁。
     - 开发者可以在native层通过JNI调用到Java层的代码，也可以在Java层声明native方法的调用入口。
 - JNI注册方式
-    - JNI有静态注册和动态注册两种注册方式
-- JNI静态注册
-    - 步骤1.在Java中声明native方法，比如：public native String stringFromJNI()
-    - 步骤2.在native层新建一个C/C++文件,并创建对应的方法(建议使用AS快捷键自动生成函数名)，比如：[testjnilib.cpp: Line 8](TestJniLib/src/main/cpp/testjnilib.cpp#L8-L8)
-- JNI动态注册
-    - 动态注册其实就是使用到了前面分析的so加载原理：在最后一步的JNI_OnLoad中注册对应的jni方法。这样在类加载的过程中就可以自动注册native函数。比如：
-- 那么如何选择使用静态注册or动态注册
-    - 动态注册和静态注册最终都可以将native方法注册到虚拟机中，推荐使用动态注册，更不容易写错，静态注册每次增加一个新的方法都需要查看原函数类的包名。
+    - 当Java代码中执行Native的代码的时候，首先是通过一定的方法来找到这些native方法。JNI有静态注册和动态注册两种注册方式。
+    - 静态注册先由Java得到本地方法的声明，然后再通过JNI实现该声明方法。动态注册先通过JNI重载JNI_OnLoad()实现本地方法，然后直接在Java中调用本地方法。
+
 
 
 ### 03.JNI基础语法
 #### 3.1 JNI三种引用
+- 在JNI规范中定义了三种引用：
+    - 局部引用（Local Reference）、全局引用（Global Reference）、弱全局引用（Weak Global Reference）。
 - Local引用
     - JNI中使用 jobject, jclass, and jstring等来标志一个Java对象，然而在JNI方法在使用的过程中会创建很多引用类型，如果使用过程中不注意就会导致内存泄露。
     - 直接使用：NewLocalRef来创建。Local引用其实就是Java中的局部引用，在声明这个局部变量的方法结束或者退出其作用域后就会被GC回收。
 - Global引用全局引用
-    - 直接使用：NewGlobalRef方法创建。多个地方需要使用的时候就会创建一个全局的引用。
+    - 全局引用可以跨方法、跨线程使用，直到被开发者显式释放。一个全局引用在被释放前保证引用对象不被GC回收。
+    - 和局部应用不同的是，能创建全局引用的函数只有NewGlobalRef，而释放它需要使用ReleaseGlobalRef函数。
 - Weak引用
     - 弱引用可以使用全局声明的方式。弱引用在内存不足或者紧张的时候会自动回收掉，可能会出现短暂的内存泄露，但是不会出现内存溢出的情况。
 
@@ -174,16 +175,44 @@
     - 处理方式2：native层抛出给Java层处理
 
 
+#### 3.4 JNI核心原理
+
+
+
+#### 3.5 注册Native函数
+- JNI静态注册：
+    - 步骤1.在Java中声明native方法，比如：public native String stringFromJNI()
+    - 步骤2.在native层新建一个C/C++文件,并创建对应的方法(建议使用AS快捷键自动生成函数名)，比如：[testjnilib.cpp: Line 8](TestJniLib/src/main/cpp/testjnilib.cpp#L8-L8)
+- JNI动态注册
+    - 通过RegisterNatives方法把C/C++中的方法映射到Java中的native方法，而无需遵循特定的方法命名格式，这样书写起来会省事很多。
+    - 动态注册其实就是使用到了前面分析的so加载原理：在最后一步的JNI_OnLoad中注册对应的jni方法。这样在类加载的过程中就可以自动注册native函数。比如：
+    - 与JNI_OnLoad()函数相对应的有JNI_OnUnload()函数，当虚拟机释放该C库的时候，则会调用JNI_OnUnload()函数来进行善后清除工作。
+- 那么如何选择使用静态注册or动态注册
+    - 动态注册和静态注册最终都可以将native方法注册到虚拟机中，推荐使用动态注册，更不容易写错，静态注册每次增加一个新的方法都需要查看原函数类的包名。
+
+
+
 ### 04.实践几个案例
-#### 4.1 N调用J方法
+#### 4.1 Java调用C/C++
+- Java调用C/C++函数调用流程
+    - Java层调用某个函数时，会从对应的JNI层中寻找该函数。根据java函数的包名、方法名、参数列表等多方面来确定函数是否存在。
+    - 如果没有就会报错，如果存在就会就会建立一个关联关系，以后再调用时会直接使用这个函数，这部分的操作由虚拟机完成。
+- 举一个例子
+    - 例如在 NativeLib 类的native stringFromJNI()方法，程序会自动在JNI层查找 Java_com_yc_testjnilib_NativeLib_stringFromJNI 函数接口，如未找到则报错。如找到，则会调用native库中的对应函数。
+
+
+#### 4.2 C/C++调用Java
 - Native层调用Java层的类的字段和方法的操作步骤
     - 第一步：创建一个Native C++的Android项目，创建 Native Lib 项目
     - 第二步：在cpp文件夹下创建：testjnilib.cpp文件，testjnilib.h文件(用来声明testjnilib.cpp中的方法)。
     - 第三步：开始编写配置文件CmkaeLists.txt文件。使用add_library创建一个新的so库
     - 第四步：编写 testjnilib.cpp文件。因为要实现native层调用Java层字段和方法，所以这里定义了两个方法：callJavaField和callJavaMethod
+    - 第五步：编写Java层的调用代码此处要注意的是调用的类的类名以及包名都要和c++文件中声明的一致，否则会报错。具体看：NativeLib
+    - 第六步：调用代码进行测试。然后查看测试结果
 
 
-#### 4.2 N调用so中API
+#### 4.3 Java调用so中API
+- 
 
 
 
