@@ -3,6 +3,7 @@ package com.yc.jnidemo;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,6 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.yc.jnidemo.first.FirstActivity;
 import com.yc.jnidemo.second.SecondActivity;
 import com.yc.jnidemo.three.ShadowViewDemo3Activity;
+import com.yc.safetyjni.SafetyJniLib;
+import com.yc.signalhooker.ILogger;
+import com.yc.signalhooker.ISignalListener;
+import com.yc.signalhooker.SigQuitHooker;
 import com.yc.testjnilib.NativeLib;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -21,6 +26,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        //initSignal();
+    }
+
+    private void initSignal() {
+        SigQuitHooker.initSignalHooker();
+        SigQuitHooker.setSignalListener(new ISignalListener() {
+            @Override
+            public void onReceiveAnrSignal() {
+                Log.d("SigQuitHooker: " , "onReceiveAnrSignal: do" );
+            }
+        });
+        SigQuitHooker.setLogger(new ILogger() {
+            @Override
+            public void onPrintLog(String message) {
+                Log.d("SigQuitHooker: " , "message: " + message);
+            }
+        });
     }
 
     private void init() {
@@ -38,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String fromJNI = NativeLib.getInstance().stringFromJNI();
                 String md5 = NativeLib.getInstance().getMd5("yc");
                 NativeLib.getInstance().initLib("db");
-                tv.setText("" + md5);
+                String stringFromJNI = SafetyJniLib.getInstance().stringFromJNI();
+                tv.setText("" + stringFromJNI);
                 break;
             case R.id.tv_2:
 
