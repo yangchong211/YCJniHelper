@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.yc.yccardview">
+    package="com.yc.jnidemo">
 
     <application
         android:allowBackup="true"
@@ -10,18 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.yc.jnidemo.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".first.FirstActivity"/>
-        <activity android:name=".second.SecondActivity"/>
-        <activity android:name=".second.CardViewActivity"/>
-        <activity android:name=".second.ShadowViewActivity"/>
-        <activity android:name=".three.ShadowViewDemo3Activity"/>
+        <activity android:name="com.yc.jnidemo.first.FirstActivity"/>
+        <activity android:name="com.yc.jnidemo.second.SecondActivity"/>
+        <activity android:name="com.yc.jnidemo.second.CardViewActivity"/>
+        <activity android:name="com.yc.jnidemo.second.ShadowViewActivity"/>
+        <activity android:name="com.yc.jnidemo.three.ShadowViewDemo3Activity"/>
     </application>
 
 </manifest>

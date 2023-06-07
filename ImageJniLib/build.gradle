@@ -1,14 +1,14 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
+
     defaultConfig {
-        applicationId "com.yc.jnidemo"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 12
+        versionName "1.2.1"
     }
     buildTypes {
         release {
@@ -23,15 +23,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation "com.google.android:flexbox:0.3.0"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
-    implementation project(':ImageJniLib')
-    implementation project(':AppJniLib')
-    implementation project(':EpicJniLib')
 }
-

@@ -1,2 +1,4 @@
-include ':app', ':CardViewLib'
-include ':ShadowConfig'
+include ':app'
+include ':AppJniLib'
+include ':ImageJniLib'
+include ':EpicJniLib'
