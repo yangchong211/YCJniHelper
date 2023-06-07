@@ -20,9 +20,11 @@ project("testjnilib")
 add_library( # Sets the name of the library.
         testjnilib
 
+        # #设置为so共享库，如果需要创建静态库.a文件，需要声明为STAIC
         # Sets the library as a shared library.
         SHARED
 
+        #需要参与编译的src文件，如果有多个，则使用空格或者换行包括进来
         # Provides a relative path to your source file(s).
         # 这个是程序入口
         testjnilib.cpp

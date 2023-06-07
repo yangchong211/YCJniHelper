@@ -8,6 +8,13 @@
     - 2.1 NDK分层构建层
     - 2.2 NDK分层Java层
     - 2.3 Native层
+- 03.JNI基础语法
+    - 3.1 JNI三种引用
+    - 3.2 JNI异常处理
+    - 3.3 C和C++互相调用
+- 04.实践几个案例
+    - 4.1 N调用J方法
+    - 4.2 N调用so中API
 
 
 
@@ -117,14 +124,66 @@
 
 
 #### 2.2 NDK分层Java层
-
+- 如何选择正确的so库呢
+    - 通常情况下，我们在编译so的时候就需要确定自己设备类型，根据设备类型选择对应abiFilters。
+    - 注意：使用as编译后的so会自动打包到apk中，如果需要提供给第三方使用，可以到build/intermediates/cmake/debug or release 目录中copy出来。
+- Java层如何调用so文件中的函数
+    - 对于Android上层代码来说，在将包正确导入到项目中后，只需要一行代码就可以完成动态库的加载过程。有两种方式：
+    ```
+    System.load("/data/local/tmp/native_lib.so"); 
+    System.loadLibrary("native_lib");
+    ```
+    - 1.加载路径不同：load是加载so的完整路径，而loadLibrary是加载so的名称，然后加上前缀lib和后缀.so去默认目录下查找。
+    - 2.自动加载库的依赖库的不同：load不会自动加载依赖库；而loadLibrary会自动加载依赖库。
+- 无论哪种方式，最终都会调用到LoadNativeLibrary()方法，该方法主要操作：
+    - 1.通过dlopen打开动态库文件
+    - 2.通过dlsym找到JNI_OnLoad符号所对应的方法地址
+    - 3.通过JNI_OnLoad去注册对应的jni方法
 
 
 
 #### 2.3 Native层
+- 如何理解JNI的设计思想
+    - JNI（全名Java Native Interface）Java native接口，其可以让一个运行在Java虚拟机中的Java代码被调用或者调用native层的用C/C++编写的基于本机硬件和操作系统的程序。简单理解为就是一个连接Java层和Native层的桥梁。
+    - 开发者可以在native层通过JNI调用到Java层的代码，也可以在Java层声明native方法的调用入口。
+- JNI注册方式
+    - JNI有静态注册和动态注册两种注册方式
+- JNI静态注册
+    - 步骤1.在Java中声明native方法，比如：public native String stringFromJNI()
+    - 步骤2.在native层新建一个C/C++文件,并创建对应的方法(建议使用AS快捷键自动生成函数名)，比如：[testjnilib.cpp: Line 8](TestJniLib/src/main/cpp/testjnilib.cpp#L8-L8)
+- JNI动态注册
+    - 动态注册其实就是使用到了前面分析的so加载原理：在最后一步的JNI_OnLoad中注册对应的jni方法。这样在类加载的过程中就可以自动注册native函数。比如：
+- 那么如何选择使用静态注册or动态注册
+    - 动态注册和静态注册最终都可以将native方法注册到虚拟机中，推荐使用动态注册，更不容易写错，静态注册每次增加一个新的方法都需要查看原函数类的包名。
 
 
+### 03.JNI基础语法
+#### 3.1 JNI三种引用
+- Local引用
+    - JNI中使用 jobject, jclass, and jstring等来标志一个Java对象，然而在JNI方法在使用的过程中会创建很多引用类型，如果使用过程中不注意就会导致内存泄露。
+    - 直接使用：NewLocalRef来创建。Local引用其实就是Java中的局部引用，在声明这个局部变量的方法结束或者退出其作用域后就会被GC回收。
+- Global引用全局引用
+    - 直接使用：NewGlobalRef方法创建。多个地方需要使用的时候就会创建一个全局的引用。
+- Weak引用
+    - 弱引用可以使用全局声明的方式。弱引用在内存不足或者紧张的时候会自动回收掉，可能会出现短暂的内存泄露，但是不会出现内存溢出的情况。
 
+
+#### 3.2 JNI异常处理
+- native层异常
+    - 处理方式1：native层自行处理
+    - 处理方式2：native层抛出给Java层处理
+
+
+### 04.实践几个案例
+#### 4.1 N调用J方法
+- Native层调用Java层的类的字段和方法的操作步骤
+    - 第一步：创建一个Native C++的Android项目，创建 Native Lib 项目
+    - 第二步：在cpp文件夹下创建：testjnilib.cpp文件，testjnilib.h文件(用来声明testjnilib.cpp中的方法)。
+    - 第三步：开始编写配置文件CmkaeLists.txt文件。使用add_library创建一个新的so库
+    - 第四步：编写 testjnilib.cpp文件。因为要实现native层调用Java层字段和方法，所以这里定义了两个方法：callJavaField和callJavaMethod
+
+
+#### 4.2 N调用so中API
 
 
 
@@ -134,7 +193,7 @@
   - https://codeleading.com/article/10304397763/
 - Android jni 开发详细流程
   - https://blog.csdn.net/weixin_39300133/article/details/90901837
-- Android之jni开发流程
+- Android之jni开发流程【精品】
   - https://mp.weixin.qq.com/s/y-eKN-yb6chyoUrwNUG-8A
 - Android JNI开发深度学习
   - https://blog.csdn.net/luo_boke/article/details/109455910

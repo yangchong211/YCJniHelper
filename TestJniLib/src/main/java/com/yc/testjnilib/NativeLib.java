@@ -21,12 +21,16 @@ public class NativeLib {
     }
 
     /**
-     * A native method that is implemented by the 'testjnilib' native library,
-     * which is packaged with this application.
+     * java调用native代码，java调用c/c++
      */
     public native String stringFromJNI();
     public native String getMd5(String str);
-
     public native void initLib(String version);
+
+    /**
+     * native调用java代码，c/c++调用java
+     */
+    public native void callJavaField(String className,String fieldName) ;
+    public native boolean callJavaMethod(String className,String methodName) ;
 
 }
