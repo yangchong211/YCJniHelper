@@ -16,6 +16,7 @@
     - 3.5 注册Native函数
 - 04.一些必备操作
     - 4.1 so库生成打包
+    - 4.2
 - 05.实践几个案例
     - 5.1 Java调用C/C++
     - 5.2 C/C++调用Java
@@ -211,10 +212,6 @@
 
 
 ### 参考博客
-- 入门级别jni开发教程
-  - https://codeleading.com/article/10304397763/
-- Android jni 开发详细流程
-  - https://blog.csdn.net/weixin_39300133/article/details/90901837
 - Android之jni开发流程【精品】
   - https://mp.weixin.qq.com/s/y-eKN-yb6chyoUrwNUG-8A
 - Android JNI开发深度学习

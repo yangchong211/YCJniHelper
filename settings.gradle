@@ -7,3 +7,4 @@ include ':TestJniLib'
 include ':SafetyJniLib'
 include ':SignalHooker'
 
+include ':ReLinker'

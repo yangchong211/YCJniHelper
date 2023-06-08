@@ -1,11 +1,15 @@
 package com.yc.testjnilib;
 
+import android.content.Context;
+
+import com.getkeepsafe.relinker.ReLinker;
+
 public class NativeLib {
 
     private static NativeLib instance;
 
     static {
-        System.loadLibrary("testjnilib");
+        //System.loadLibrary("testjnilib");
     }
 
     public static NativeLib getInstance() {
@@ -17,6 +21,21 @@ public class NativeLib {
             }
         }
         return instance;
+    }
+
+    public void init(Context context){
+        //ReLinker.loadLibrary(context,"testjnilib");
+        ReLinker.loadLibrary(context, "testjnilib", new ReLinker.LoadListener() {
+            @Override
+            public void success() {
+
+            }
+
+            @Override
+            public void failure(Throwable t) {
+
+            }
+        });
     }
 
     /**
