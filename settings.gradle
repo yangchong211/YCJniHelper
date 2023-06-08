@@ -1,7 +1,9 @@
 include ':app'
+include ':demo'
 include ':VideoJniLib'
 include ':ImageJniLib'
 include ':EpicJniLib'
 include ':TestJniLib'
 include ':SafetyJniLib'
 include ':SignalHooker'
+

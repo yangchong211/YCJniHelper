@@ -1,7 +1,7 @@
 #### 目录介绍
 - 01.学习JNI开发流程
-    - 1.1 JNI和NDK的关系
-    - 1.2 JNI开发流程
+    - 1.1 JNI开发概念
+    - 1.2 JNI和NDK的关系
     - 1.3 JNI实践步骤
     - 1.4 NDK使用场景
 - 02.NDK架构分层
@@ -14,33 +14,34 @@
     - 3.3 C和C++互相调用
     - 3.4 JNI核心原理
     - 3.5 注册Native函数
-- 04.实践几个案例
-    - 4.1 Java调用C/C++
-    - 4.2 C/C++调用Java
-    - 4.3 Java调用so中API
+- 04.一些必备操作
+    - 4.1 so库生成打包
+- 05.实践几个案例
+    - 5.1 Java调用C/C++
+    - 5.2 C/C++调用Java
+    - 5.3 Java调用so中API
 
 
 
 
 ### 01.学习JNI开发流程
-#### 1.1 JNI和NDK的关系
+#### 1.1 JNI开发概念
+- .SO库是什么东西
+    - NDK为了方便使用，提供了一些脚本，使得更容易的编译C/C++代码。在Android程序编译中会将C/C++编译成动态库.so，类似java库.jar文件一样，它的生成需要使用NDK工具来打包。
+    - so是shared object的缩写，见名思义就是共享的对象，机器可以直接运行的二进制代码。实质so文件就是一堆C、C++的头文件和实现文件打包成一个库。
+- JNI是什么东西
+    - JNI的全称是Java Native Interface，即本地Java接口。因为 Java 具备跨平台的特点，所以Java 与 本地代码交互的能力非常弱。
+    - 采用JNI特性可以增强 Java 与本地代码交互的能力，使Java和其他类型的语言如C++/C能够互相调用。
+
+
+#### 1.2 JNI和NDK的关系
 - JNI和NDK学习内容太难
     - 其实难的不是JNI和NDK，而是C/C++语言，JNI和NDK只是个工具，很容易学习的。
 - JNI和NDK有何联系
     - 学习JNI之前，首先得先知道JNI、NDK、Java和C/C++之间的关系。
     - 在Android开发中，有时为了性能和安全性（反编译），需要使用C/C++语言，但是Android APP层用的是Java语言，怎么才能让这两种语言进行交流呢，因为他们的编码方式是不一样的，这是就需要JNI了。
-    - JNI可以被看作是代理模式，Java使用JVM加载并调用JNI来间接调用C/C++代码，也就是Java让JNI代其与C/C++沟通。
-    - NDK呢其实主要就是用来将C/C++代码打包编译成.so库的。
-
-
-#### 1.2 JNI开发流程
-- JNI开发流程主要分为以下6步：
-    - 1、编写声明了native方法的Java类
-    - 2、将Java源代码编译成class字节码文件
-    - 3、用javah -jni命令生成.h头文件（javah是jdk自带的一个命令，-jni参数表示将class中用native声明的函数生成jni规则的函数）
-    - 4、用本地代码实现.h头文件中的函数
-    - 5、将本地代码编译成动态库（windows：*.dll，linux/unix：*.so，mac os x：*.jnilib）
-    - 6、拷贝动态库至 java.library.path 本地库搜索目录下，并运行Java程序
+    - JNI可以被看作是代理模式，JNI是java接口，用于Java与C/C++之间的交互，作为两者的桥梁，也就是Java让JNI代其与C/C++沟通。
+    - NDK是Android工具开发包，帮助快速开发C/C++动态库，相当于JDK开发java程序一样，同时能帮打包生成.so库
 
 
 #### 1.3 JNI实践步骤
@@ -56,12 +57,12 @@
     - NDK学习：https://developer.android.google.cn/ndk/guides?hl=zh-cn
 
 
-
 #### 1.4 NDK使用场景
 - NDK的使用场景一般在：
     - 1.为了提升这些模块的性能，对图形，视频，音频等计算密集型应用，将复杂模块计算封装在.so或者.a文件中处理。
     - 2.使用的是C/C++进行编写的第三方库移植。如ffmppeg，OpenGl等。
     - 3.某些情况下为了提高数据安全性，也会封装so来实现。毕竟使用纯Java开发的app是有很多逆向工具可以破解的。
+
 
 
 ### 02.NDK架构分层
@@ -164,8 +165,28 @@
 
 
 
-### 04.实践几个案例
-#### 4.1 Java调用C/C++
+### 04.一些必备操作
+#### 4.1 so库生成打包
+- 关于.so文件的生成有两种方式
+    - 可以提供给大家参考，一种是CMake自动生成法，另一种是传统打包法。
+- so文件在程序运行时就会加载
+    - 所以想使用Java调用.so文件，必有某个Java类运行时load了native库，并通过JNI调用了它的方法。
+- cmake生成.so方案
+    - 第一步：创建native C++ Project项目，创建native函数并实现，先测试本地JNI函数调通
+    - 第二步：获取.so文件。将生成的.apk文件改为.zip文件，然后进行解压缩，就能看到.so文件。如果想支持多种库架构，则可在module的build.gradle中配置ndk支持。
+    - 第三步：so文件测试。新建一个普通的Android程序，将so库放入程序，然后创建类(注意要相同的包名、文件名及方法名)去加载so库。
+    - 总结一下：Android Studio自动创建的native C++项目默认支持CMake方式，它支持JNI函数调用的入口在build.gradle中。
+- 传统打包生成.so方案【不推荐这种方式】
+    - 第一步：在Java类中声明一个本地方法。
+    - 第二步：执行指令javah获得C声明的.h文件。
+    - 第三步：获得.c文件并实现本地方法。创建Android.mk和Application.mk，并配置其参数，两个文件如不编写或编写正常会出现报错。
+    - 第四步：打包.so库。cd到\app目录下，执行命令 ndk-build即可。生成so库后，最后测试ok即可。
+
+
+
+
+### 05.实践几个案例
+#### 5.1 Java调用C/C++
 - Java调用C/C++函数调用流程
     - Java层调用某个函数时，会从对应的JNI层中寻找该函数。根据java函数的包名、方法名、参数列表等多方面来确定函数是否存在。
     - 如果没有就会报错，如果存在就会就会建立一个关联关系，以后再调用时会直接使用这个函数，这部分的操作由虚拟机完成。
@@ -173,7 +194,7 @@
     - 例如在 NativeLib 类的native stringFromJNI()方法，程序会自动在JNI层查找 Java_com_yc_testjnilib_NativeLib_stringFromJNI 函数接口，如未找到则报错。如找到，则会调用native库中的对应函数。
 
 
-#### 4.2 C/C++调用Java
+#### 5.2 C/C++调用Java
 - Native层调用Java层的类的字段和方法的操作步骤
     - 第一步：创建一个Native C++的Android项目，创建 Native Lib 项目
     - 第二步：在cpp文件夹下创建：testjnilib.cpp文件，testjnilib.h文件(用来声明testjnilib.cpp中的方法)。
@@ -183,7 +204,7 @@
     - 第六步：调用代码进行测试。然后查看测试结果
 
 
-#### 4.3 Java调用so中API
+#### 5.3 Java调用so中API
 - 
 
 

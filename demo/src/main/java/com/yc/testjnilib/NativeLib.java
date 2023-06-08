@@ -4,7 +4,6 @@ public class NativeLib {
 
     private static NativeLib instance;
 
-    // Used to load the 'testjnilib' library on application startup.
     static {
         System.loadLibrary("testjnilib");
     }
@@ -26,11 +25,4 @@ public class NativeLib {
     public native String stringFromJNI();
     public native String getMd5(String str);
     public native void initLib(String version);
-
-    /**
-     * native调用java代码，c/c++调用java
-     */
-    //public native void callJavaField(String className,String fieldName) ;
-    //public native boolean callJavaMethod(String className,String methodName) ;
-
 }

@@ -38,6 +38,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    //CMake的NDK项目它有自己一套运行流程
+    //Gradle 调用外部构建脚本CMakeLists.txt
+    //CMake 按照构建脚本的命令将 C++ 源文件 testjnilib.cpp 编译到共享的对象库中，并命名为 libtestjnilib.so ，Gradle 随后会将其打包到APK中
     externalNativeBuild {
         cmake {
             //声明cmake配置文件路径
