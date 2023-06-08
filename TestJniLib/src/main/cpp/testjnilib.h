@@ -1,10 +1,10 @@
 #include <jni.h>
-#include "../../../../EpicJniLib/src/main/cpp/art.h"
 
 
 //
 // Created by 杨充 on 2023/6/7.
 //
+//约定俗成的操作是 .h 文件主要负责类成员变量和方法的声明； .cpp 文件主要负责成员变量和方法的定义。
 
 //ida打开显示为：assume cs:yc
 #define JNI_SECTION ".yc"

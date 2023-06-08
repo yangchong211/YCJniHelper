@@ -96,34 +96,6 @@
     - Cmake优势在哪里呢？在生成makefile过程中会自动分析源代码，创建一个组件之间依赖的关系树，这样就可以大大缩减在make编译阶段的时间。
 - Cmake构建项目配置
     - 使用Cmake进行构建需要在build.gradle配置文件中声明externalNativeBuild
-    ```
-    android {
-        defaultConfig {
-            externalNativeBuild {
-                cmake {
-                    //声明当前Cmake项目使用的Android abi
-                    abiFilters "armeabi-v7a"
-                    //提供给Cmake的参数信息 可选
-                    arguments "-DANDROID_ARM_NEON=TRUE", "-DANDROID_TOOLCHAIN=clang"
-                    //提供给C编译器的一个标志 可选
-                    cFlags "-D__STDC_FORMAT_MACROS"
-                    //提供给C++编译器的一个标志 可选
-                    cppFlags "-fexceptions", "-frtti","-std=c++11"
-                    //指定哪个so库会被打包到apk中去 可选
-                    targets "libexample-one", "my-executible-demo"
-                }
-            }
-        }
-        externalNativeBuild {
-            cmake {
-                path "src/main/cpp/CMakeLists.txt" //声明cmake配置文件路径
-                version "3.10.2" //声明cmake版本
-            }
-    
-        }
-    }
-    ```
-
 
 
 #### 2.2 NDK分层Java层
