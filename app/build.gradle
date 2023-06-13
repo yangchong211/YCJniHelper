@@ -20,6 +20,24 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    //列出所有包含有so文件的库信息，主要是找到项目中so库在那个项目文件夹下
+    tasks.whenTaskAdded { task ->
+        //如果是有多个flavor，则用 mergeFlavorDebugNativeLibs的形式
+        if (task.name=='mergeDebugNativeLibs') {
+            task.doFirst {
+                println("------------------- find so files start -------------------")
+                println("------------------- find so files start -------------------")
+                println("------------------- find so files start -------------------")
+                it.inputs.files.each { file ->
+                    printDir(new File(file.absolutePath))
+                }
+                println("------------------- find so files end -------------------")
+                println("------------------- find so files end -------------------")
+                println("------------------- find so files end -------------------")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -38,3 +56,14 @@ dependencies {
     //implementation project(':EpicJniLib')
 }
 
+def printDir(File file) {
+    if (file != null) {
+        if (file.isDirectory()) {
+            file.listFiles().each {
+                printDir(it)
+            }
+        } else if (file.absolutePath.endsWith(".so")) {
+            println "find so file: $file.absolutePath"
+        }
+    }
+}

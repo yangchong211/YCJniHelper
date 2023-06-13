@@ -16,7 +16,7 @@
     - 3.5 注册Native函数
 - 04.一些必备操作
     - 4.1 so库生成打包
-    - 4.2
+    - 4.2 so库查询操作
 - 05.实践几个案例
     - 5.1 Java调用C/C++
     - 5.2 C/C++调用Java
@@ -184,6 +184,11 @@
     - 第四步：打包.so库。cd到\app目录下，执行命令 ndk-build即可。生成so库后，最后测试ok即可。
 
 
+
+#### 4.2 so库查询操作
+- 第一步：在 app 模块的 build.gradle 中，追加以下代码：
+- 第二步：执行命令行：./gradlew assembleDebug 【注意如果遇到gradlew找不到，则输入：chmod +x gradlew】
+- https://blog.csdn.net/eieihihi/article/details/109289312
 
 
 ### 05.实践几个案例
