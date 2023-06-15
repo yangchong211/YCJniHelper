@@ -1,17 +1,12 @@
 package com.yc.jnidemo;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.yc.jnidemo.first.FirstActivity;
-import com.yc.jnidemo.second.SecondActivity;
-import com.yc.jnidemo.three.ShadowViewDemo3Activity;
 import com.yc.safetyjni.SafetyJniLib;
 import com.yc.signalhooker.ILogger;
 import com.yc.signalhooker.ISignalListener;

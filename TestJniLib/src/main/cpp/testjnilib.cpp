@@ -16,6 +16,7 @@ Java_com_yc_testjnilib_NativeLib_stringFromJNI(JNIEnv *env, jobject /* this */) 
     //jobject thiz
     //在AS中自动为我们生成的JNI方法声明都会带一个这样的参数，这个instance就代表Java中native方法声明所在的
     std::string hello = "Hello from C++";
+    
     //思考一下，为什么直接返回字符串会出现错误提示？
     //return "hello";
     return env->NewStringUTF(hello.c_str());

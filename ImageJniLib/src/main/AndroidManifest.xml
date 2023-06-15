@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.yc.shadow">
+    package="com.yc.imagejni">
 
     <application
         android:allowBackup="true"
