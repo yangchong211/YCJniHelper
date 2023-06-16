@@ -21,9 +21,11 @@
 - 05.实践几个案例
     - 5.1 Java调用C/C++
     - 5.2 C/C++调用Java
-    - 5.3 Java调用so中API
-- 06.JNI开发中C++
-- 6.1
+    - 5.3 Java调三方so中API
+    - 5.4 Java动态调C++
+- 06.JNI遇到的问题
+    - 6.1 混淆的bug
+    - 6.2 注意字符串编译
 
 
 
@@ -152,6 +154,8 @@
 
 
 #### 3.4 JNI核心原理
+- java运行在jvm，jvm本身就是使用C/C++编写的，因此jni只需要在java代码、jvm、C/C++代码之间做切换即可
+    - ![image](https://img-blog.csdnimg.cn/331badb23b4e44cda0ced26c6dcf9478.png)
 
 
 
@@ -188,9 +192,15 @@
 
 
 #### 4.2 so库查询操作
-- 第一步：在 app 模块的 build.gradle 中，追加以下代码：
-- 第二步：执行命令行：./gradlew assembleDebug 【注意如果遇到gradlew找不到，则输入：chmod +x gradlew】
-- https://blog.csdn.net/eieihihi/article/details/109289312
+- so库如何查找所对应的位置
+    - 第一步：在 app 模块的 build.gradle 中，追加以下代码：
+    - 第二步：执行命令行：./gradlew assembleDebug 【注意如果遇到gradlew找不到，则输入：chmod +x gradlew】
+- so文件查询结果后。就可以查询到so文件属于那个lib库的！如下所示：libtestjnilib.so文件属于TestJniLib库的
+    ```
+    find so file: /Users/yc/github/YCJniHelper/TestJniLib/build/intermediates/library_jni/debug/jni/armeabi-v7a/libtestjnilib.so
+    find so file: /Users/yc/github/YCJniHelper/SafetyJniLib/build/intermediates/library_jni/debug/jni/armeabi-v7a/libsafetyjnilib.so
+    find so file: /Users/yc/github/YCJniHelper/SignalHooker/build/intermediates/library_jni/debug/jni/armeabi-v7a/libsignal-hooker.so
+    ```
 
 
 ### 05.实践几个案例
@@ -198,6 +208,33 @@
 - Java调用C/C++函数调用流程
     - Java层调用某个函数时，会从对应的JNI层中寻找该函数。根据java函数的包名、方法名、参数列表等多方面来确定函数是否存在。
     - 如果没有就会报错，如果存在就会就会建立一个关联关系，以后再调用时会直接使用这个函数，这部分的操作由虚拟机完成。
+- Java层调用C/C++方法操作步骤
+    - 第一步：创建java类NativeLib，然后定义native方法stringFromJNI()
+    ```
+    public native String stringFromJNI();
+    ```
+    - 第二步：根据此native方法编写C文件，可以通过命令后或者studio提示生成C++对应的方法函数
+    ```
+    //java中stringFromJNI
+    //extern “C”    指定以"C"的方式来实现native函数
+    extern "C"
+    //JNIEXPORT     宏定义，用于指定该函数是JNI函数。表示此函数可以被外部调用，在Android开发中不可省略
+    JNIEXPORT jstring
+    //JNICALL       宏定义，用于指定该函数是JNI函数。，无实际意义，但是不可省略
+    JNICALL
+    //以注意到jni的取名规则，一般都是包名 + 类名，jni方法只是在前面加上了Java_，并把包名和类名之间的.换成了_
+    Java_com_yc_testjnilib_NativeLib_stringFromJNI(JNIEnv *env, jobject /* this */) {
+        //JNIEnv 代表了JNI的环境，只要在本地代码中拿到了JNIEnv和jobject
+        //JNI层实现的方法都是通过JNIEnv 指针调用JNI层的方法访问Java虚拟机，进而操作Java对象，这样就能调用Java代码。
+        //jobject thiz
+        //在AS中自动为我们生成的JNI方法声明都会带一个这样的参数，这个instance就代表Java中native方法声明所在的
+        std::string hello = "Hello from C++";
+        
+        //思考一下，为什么直接返回字符串会出现错误提示？
+        //return "hello";
+        return env->NewStringUTF(hello.c_str());
+    }
+    ```
 - 举一个例子
     - 例如在 NativeLib 类的native stringFromJNI()方法，程序会自动在JNI层查找 Java_com_yc_testjnilib_NativeLib_stringFromJNI 函数接口，如未找到则报错。如找到，则会调用native库中的对应函数。
 
@@ -205,15 +242,65 @@
 #### 5.2 C/C++调用Java
 - Native层调用Java层的类的字段和方法的操作步骤
     - 第一步：创建一个Native C++的Android项目，创建 Native Lib 项目
-    - 第二步：在cpp文件夹下创建：testjnilib.cpp文件，testjnilib.h文件(用来声明testjnilib.cpp中的方法)。
+    - 第二步：在cpp文件夹下创建：calljnilib.cpp文件，calljnilib.h文件(用来声明calljnilib.cpp中的方法)。
     - 第三步：开始编写配置文件CmkaeLists.txt文件。使用add_library创建一个新的so库
-    - 第四步：编写 testjnilib.cpp文件。因为要实现native层调用Java层字段和方法，所以这里定义了两个方法：callJavaField和callJavaMethod
-    - 第五步：编写Java层的调用代码此处要注意的是调用的类的类名以及包名都要和c++文件中声明的一致，否则会报错。具体看：NativeLib
+    - 第四步：编写 calljnilib.cpp文件。因为要实现native层调用Java层字段和方法，所以这里定义了两个方法：callJavaField和callJavaMethod
+    - 第五步：编写Java层的调用代码此处要注意的是调用的类的类名以及包名都要和c++文件中声明的一致，否则会报错。具体看：CallNativeLib
     - 第六步：调用代码进行测试。然后查看测试结果
 
 
-#### 5.3 Java调用so中API
-- 
+#### 5.3 Java调三方so中API
+- 直接拿前面案例的 calljnilib.so 来测试，但是为了实现三方调用还需要对文件进行改造
+    - 第一步：要实现三方so库调用，在 calljnilib.h中声明两个和 calljnilib.cpp中对应的方法：callJavaField和callJavaMethod，一般情况下这个头文件是第三方库一起提供的给外部调用的。
+    - 第二步：对CMakeLists配置文件改造。主要是做一些库的配置操作。
+    - 第三步：编写 third_call.cpp文件，在这内部调用第三方库。这里需要将第三方头文件导入进来，如果CmakeLists文件中没有声明头文件，就使用#include "include/calljnilib.h" 这种方式导入
+    - 第四步：最后测试下：callThirdSoMethod("com/yc/testjnilib/HelloCallBack","updateName");
+
+
+
+#### 5.4 Java动态调C++
+- 先说一下问题：
+    - 在实现stringFromJNI()时，可以看到c++里面的方法名很长 Java_com_yc_testjnilib_NativeLib_stringFromJNI。
+    - 这是jni静态注册的方式，按照jni规范的命名规则进行查找，格式为Java_类路径_方法名。Studio默认这种方式名字太长了，能否设置短一点。
+- 动态注册方法解决上面问题
+    - 当程序在Java层运行System.loadLibrary("testjnilib")；这行代码后，程序会去载入testjnilib.so文件。
+    - 于此同时，产生一个Load事件，这个事件触发后，程序默认会在载入的.so文件的函数列表中查找JNI_OnLoad函数并执行。与Load事件相对，在载入的.so文件被卸载时，Unload事件被触发。
+    - 此时，程序默认会去载入的.so文件的函数列表中查找JNI_OnLoad函数并执行，然后卸载.so文件。
+    - 因此开发者经常会在JNI_OnLoad中做一些初始化操作，动态注册就是在这里进行的，使用env->RegisterNatives(clazz, gMethods, numMethods)。
+- 动态注册优势分析
+    - 相比静态注册，动态注册的灵活性更高，如果修改了native函数所在类的包名或类名，仅调整native函数的签名信息即可。
+    - 还有一个优势：动态注册，java代码不需要更改，只需要更改native代码。
+
+
+
+### 06.JNI遇到的问题
+#### 6.1 混淆的bug
+- 在Android工程中要排除对native方法以及所在类的混淆（java工程不需要），否则要注册的java类和java函数会找不到。proguard-rules.pro中添加。
+    ```
+    # 设置所有 native 方法不被混淆
+    -keepclasseswithmembernames class * {
+        native <methods>;
+    }
+    # 不混淆类
+    -keep class com.yc.testjnilib.** { *; }
+    ```
+
+
+#### 6.2 注意字符串编译
+- 比如：对于JNI方法来说，使用如下方法返回或者调用直接崩溃了，有点搞不懂原理？
+    ```
+    env->CallMethod(objCallBack,_methodName,"123");
+    ```
+- 这段代码编译没问题，但是在运行的时候就报错了：
+    ```
+    JNI DETECTED ERROR IN APPLICATION: use of deleted global reference
+    ```
+- 最终定位到是最后一个参数需要使用jstring而不能直接使用字符串表示。如下所示：
+    ```
+    //思考一下，为什么直接返回字符串会出现错误提示？为何这样设计……
+    //return "hello";
+    return env->NewStringUTF(hello.c_str());
+    ```
 
 
 

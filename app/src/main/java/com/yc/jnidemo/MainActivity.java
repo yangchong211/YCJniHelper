@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.yc.calljni.CallNativeLib;
 import com.yc.safetyjni.SafetyJniLib;
 import com.yc.signalhooker.ILogger;
 import com.yc.signalhooker.ISignalListener;
@@ -56,10 +58,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String md5 = NativeLib.getInstance().getMd5("yc");
                 NativeLib.getInstance().initLib("db");
                 String stringFromJNI = SafetyJniLib.getInstance().stringFromJNI();
-                tv.setText("" + stringFromJNI);
+                String nameFromJNI = NativeLib.getInstance().getNameFromJNI();
+                tv.setText("" + nameFromJNI);
                 break;
             case R.id.tv_2:
-
+                CallNativeLib.getInstance().callJavaField("com/yc/calljni/HelloCallBack","name");
+                CallNativeLib.getInstance().callJavaMethod("com/yc/calljni/HelloCallBack","updateName");
                 break;
             case R.id.tv_3:
 

@@ -43,11 +43,10 @@ Java_com_yc_testjnilib_NativeLib_initLib(JNIEnv *env, jobject thiz, jstring vers
 }
 
 
-
-
-
-
-
+jstring getNameFromJNI(JNIEnv *env, jobject /* this */) {
+std::string hello = "Hello from C++ , yc lov txy";
+return env->NewStringUTF(hello.c_str());
+}
 
 
 //JNIEnv是什么？
@@ -59,29 +58,44 @@ Java_com_yc_testjnilib_NativeLib_initLib(JNIEnv *env, jobject thiz, jstring vers
 //动态注册其实就是使用到了前面分析的so加载原理：在最后一步的JNI_OnLoad中注册对应的jni方法。这样在类加载的过程中就可以自动注册native函数。
 //java路径
 #define JNI_CLASS_NAME "com/yc/testjnilib/NativeLib"
+/**
+ * 需要动态注册的方法
+ * 第一个参数：java中要注册的native方法名
+ * 第二个参数：方法的签名，括号内为参数类型，后面为返回类型
+ * 第三个参数：需要重新注册的方法名
+ */
 static JNINativeMethod gMethods[] = {
-        {"stringFromJNI","()Ljava/lang/String;",
-         (void *)Java_com_yc_testjnilib_NativeLib_stringFromJNI
-         },
+        {"stringFromJNI", "()Ljava/lang/String;",
+         (void *) Java_com_yc_testjnilib_NativeLib_stringFromJNI
+        },
+        {"getNameFromJNI", "()Ljava/lang/String;",
+         (void *) getNameFromJNI
+        },
 };
 
 int register_dynamic_Methods(JNIEnv *env){
     std::string s = JNI_CLASS_NAME;
     const char* className = s.c_str();
+    // 找到需要动态注册的java类
     jclass clazz = env->FindClass(className);
     if(clazz == NULL){
         return JNI_FALSE;
     }
     //注册JNI方法
     //核心方法：RegisterNatives，jni注册native方法。
+    //参数1：Java对应的类。
+    //参数2：JNINativeMethod数组。
+    //参数3：JNINativeMethod数组的长度，也就是要注册的方法的个数。
     if(env->RegisterNatives(clazz,gMethods,sizeof(gMethods)/sizeof(gMethods[0]))<0){
         return JNI_FALSE;
     }
     return JNI_TRUE;
 }
 
+//System.loadLibrary()执行时会调用此方法
+extern "C"
 //类加载时会调用到这里
-jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = NULL;
     if(vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK){
         return JNI_ERR;
@@ -90,28 +104,6 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if(!register_dynamic_Methods(env)){
         return JNI_ERR;
     }
+    // 返回JNI使用的版本
     return JNI_VERSION_1_6;
-}
-
-//native层异常
-int test_error1(JNIEnv *env){
-    /*检测是否有异常*/
-    jboolean hasException = env->ExceptionCheck();
-    if(hasException == JNI_TRUE){
-        //处理方式1：native层自行处理
-        //打印异常，同Java中的printExceptionStack;
-        env->ExceptionDescribe();
-        //清除当前异常
-        env->ExceptionClear();
-
-        /*方式2：抛出异常给上面，让Java层去捕获*/
-        jclass noFieldClass = env->FindClass("java/lang/Exception");
-        std::string msg("fieldName");
-        std::string header = "找不到该字段";
-        env->ThrowNew(noFieldClass,header.append(msg).c_str());
-        //env->ReleaseStringUTFChars(fieldName,_fieldName);
-        return 0;
-
-    }
-    return 0;
 }

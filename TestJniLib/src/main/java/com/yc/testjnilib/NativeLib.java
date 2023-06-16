@@ -24,13 +24,9 @@ public class NativeLib {
      * java调用native代码，java调用c/c++
      */
     public native String stringFromJNI();
+    public native String getNameFromJNI();
     public native String getMd5(String str);
     public native void initLib(String version);
 
-    /**
-     * native调用java代码，c/c++调用java
-     */
-    //public native void callJavaField(String className,String fieldName) ;
-    //public native boolean callJavaMethod(String className,String methodName) ;
-
+    public native String callThirdSoMethod();
 }

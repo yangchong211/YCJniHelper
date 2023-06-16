@@ -49,7 +49,7 @@ dependencies {
     implementation "com.google.android:flexbox:0.3.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation project(':ImageJniLib')
-    implementation project(':VideoJniLib')
+    implementation project(':CallJniLib')
     implementation project(':TestJniLib')
     implementation project(':SafetyJniLib')
     implementation project(':SignalHooker')

@@ -19,12 +19,12 @@
 //因此上面两个相同的函数，经过C，C++编绎后会产生完全不同的名字。所以，如果把一个用c编绎器编绎的目标代码和一个用C++编绎器编绎的目标代码进行连接，就会出现连接失败的错误。
 //extern "C" 是为了避免C++编绎器按照C++的方式去编绎C函数，
 #ifdef __cplusplus
+//注意：此处对引入的是函数使用了extern "C"对方法进行了包裹，目的就是为了当引用的是cpp文件，extern "C"修饰的函数可以让外部访问到。
 extern "C" {
 #endif
 
-jstring Java_com_yc_testjnilib_NativeLib_stringFromJNI(JNIEnv *env, jobject /* this */);
-jstring Java_com_yc_testjnilib_NativeLib_getMd5(JNIEnv *env, jobject thiz, jstring str);
-jstring getNameFromJNI(JNIEnv *env, jobject obj);
+void callJavaField(JNIEnv* env,jobject obj,jstring className,jstring fieldName);
+jboolean callJavaMethod(JNIEnv* env,jobject obj1,jstring className,jstring methodName);
 
 #ifdef __cplusplus
 }

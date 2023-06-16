@@ -28,7 +28,7 @@
         android:background="@color/colorAccent"
         android:layout_marginTop="10dp"
         android:padding="10dp"
-        android:text="2."/>
+        android:text="2.native层调用Java层的类的字段和方法"/>
 
     <TextView
         android:id="@+id/tv_3"
