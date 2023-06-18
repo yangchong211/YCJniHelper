@@ -64,6 +64,15 @@ return env->NewStringUTF(hello.c_str());
  * 第二个参数：方法的签名，括号内为参数类型，后面为返回类型
  * 第三个参数：需要重新注册的方法名
  */
+ //研究下JNINativeMethod:
+ //JNI允许我们提供一个函数映射表，注册给Java虚拟机，这样JVM就可以用函数映射表来调用相应的函数。
+ //这样就可以不必通过函数名来查找需要调用的函数了。
+ //Java与JNI通过JNINativeMethod的结构来建立联系，它被定义在jni.h中，其结构内容如下：
+ //typedef struct {
+ //    const char* name;
+ //    const char* signature;
+ //    void* fnPtr;
+ //} JNINativeMethod;
 static JNINativeMethod gMethods[] = {
         {"stringFromJNI", "()Ljava/lang/String;",
          (void *) Java_com_yc_testjnilib_NativeLib_stringFromJNI
@@ -86,6 +95,7 @@ int register_dynamic_Methods(JNIEnv *env){
     //参数1：Java对应的类。
     //参数2：JNINativeMethod数组。
     //参数3：JNINativeMethod数组的长度，也就是要注册的方法的个数。
+    //通过调用RegisterNatives函数将注册函数的Java类，以及注册函数的数组，以及个数注册在一起，这样就实现了绑定。
     if(env->RegisterNatives(clazz,gMethods,sizeof(gMethods)/sizeof(gMethods[0]))<0){
         return JNI_FALSE;
     }
