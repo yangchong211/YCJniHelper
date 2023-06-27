@@ -22,4 +22,5 @@ public class SafetyJniLib {
 
     public native String stringFromJNI();
 
+    public native String getAppSign();
 }

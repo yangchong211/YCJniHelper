@@ -1,10 +1,9 @@
 include ':app'
 include ':demo'
 include ':CallJniLib'
-include ':ImageJniLib'
+//include ':MoonerJniLib'
 include ':EpicJniLib'
 include ':TestJniLib'
 include ':SafetyJniLib'
 include ':SignalHooker'
-
 include ':ReLinker'

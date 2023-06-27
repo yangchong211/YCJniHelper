@@ -24,9 +24,13 @@
     - 5.2 C/C++调用Java
     - 5.3 Java调三方so中API
     - 5.4 Java动态调C++
-- 06.JNI遇到的问题
-    - 6.1 混淆的bug
-    - 6.2 注意字符串编译
+- 06.一些技术原理
+    - 6.1 JNIEnv创建和释放
+    - 6.2 动态注册的原理
+    - 6.3 注册JNI流程图
+- 07.JNI遇到的问题
+    - 7.1 混淆的bug
+    - 7.2 注意字符串编译
 
 
 
@@ -38,6 +42,8 @@
 - JNI是什么东西
     - JNI的全称是Java Native Interface，即本地Java接口。因为 Java 具备跨平台的特点，所以Java 与 本地代码交互的能力非常弱。
     - 采用JNI特性可以增强 Java 与本地代码交互的能力，使Java和其他类型的语言如C++/C能够互相调用。
+
+
 
 
 #### 1.2 JNI和NDK的关系
@@ -103,6 +109,7 @@
     - Cmake优势在哪里呢？在生成makefile过程中会自动分析源代码，创建一个组件之间依赖的关系树，这样就可以大大缩减在make编译阶段的时间。
 - Cmake构建项目配置
     - 使用Cmake进行构建需要在build.gradle配置文件中声明externalNativeBuild
+
 
 
 #### 2.2 NDK分层Java层
@@ -275,27 +282,68 @@
 
 
 #### 5.4 Java动态调C++
-- 先说一下问题：
+- 先说一下静态调C++的问题：
     - 在实现stringFromJNI()时，可以看到c++里面的方法名很长 Java_com_yc_testjnilib_NativeLib_stringFromJNI。
     - 这是jni静态注册的方式，按照jni规范的命名规则进行查找，格式为Java_类路径_方法名。Studio默认这种方式名字太长了，能否设置短一点。
+    - 程序运行效率低，因为初次调用native函数时需要根据根据函数名在JNI层中搜索对应的本地函数，然后建立对应关系，这个过程比较耗时。
 - 动态注册方法解决上面问题
     - 当程序在Java层运行System.loadLibrary("testjnilib")；这行代码后，程序会去载入testjnilib.so文件。
     - 于此同时，产生一个Load事件，这个事件触发后，程序默认会在载入的.so文件的函数列表中查找JNI_OnLoad函数并执行。与Load事件相对，在载入的.so文件被卸载时，Unload事件被触发。
     - 此时，程序默认会去载入的.so文件的函数列表中查找JNI_OnLoad函数并执行，然后卸载.so文件。
     - 因此开发者经常会在JNI_OnLoad中做一些初始化操作，动态注册就是在这里进行的，使用env->RegisterNatives(clazz, gMethods, numMethods)。
 - 动态注册操作步骤：
-    - 第一步：因为System.loadLibrary()执行时会调用此方法，实现JNI_OnLoad方法
-    - 第二步：调用FindClass找到需要动态注册的java类，注意这个是native方法那个类的路径字符串
+    - 第一步：因为System.loadLibrary()执行时会调用此方法，实现JNI_OnLoad方法。
+    - 第二步：调用FindClass找到需要动态注册的java类【定义要关联的对应Java类】，注意这个是native方法那个类的路径字符串
     - 第三步：定义一个静态数据(JNINativeMethod类型)，里面存放需要动态注册的native方法，以及参数名称
     - 第四步：通过调用jni中的RegisterNatives函数将注册函数的Java类，以及注册函数的数组，以及个数注册在一起，这样就实现了绑定。
 - 动态注册优势分析
     - 相比静态注册，动态注册的灵活性更高，如果修改了native函数所在类的包名或类名，仅调整native函数的签名信息即可。
     - 还有一个优势：动态注册，java代码不需要更改，只需要更改native代码。
+    - 效率更高：通过在.so文件载入初始化时，即JNI_OnLoad函数中，先行将native函数注册到VM的native函数链表中去，后续每次java调用native函数时都会在VM中的native函数链表中找到对应的函数，从而加快速度。
 
 
 
-### 06.JNI遇到的问题
-#### 6.1 混淆的bug
+### 06.一些技术原理
+#### 6.1 JNIEnv创建和释放
+- JNIEnv的创建方式
+    - C 中——JNIInvokeInterface：JNIInvokeInterface是C语言环境中的JavaVM结构体，调用 (AttachCurrentThread)(JavaVM, JNIEnv*, void) 方法，能够获得JNIEnv结构体；
+    - C++中 ——_JavaVM：_JavaVM是C++中JavaVM结构体，调用jint AttachCurrentThread(JNIEnv** p_env, void* thr_args) 方法，能够获取JNIEnv结构体；
+- JNIEnv的释放：
+    - C 中释放：调用JavaVM结构体JNIInvokeInterface中的(DetachCurrentThread)(JavaVM)方法，能够释放本线程的JNIEnv
+    - C++ 中释放：调用JavaVM结构体_JavaVM中的jint DetachCurrentThread(){ return functions->DetachCurrentThread(this); } 方法，就可以释放 本线程的JNIEnv
+- JNIEnv和线程的关系
+    - JNIEnv只在当前线程有效：JNIEnv仅仅在当前线程有效，JNIEnv不能在线程之间进行传递，在同一个线程中，多次调用JNI层方便，传入的JNIEnv是同样的
+    - 本地方法匹配多个JNIEnv：在Java层定义的本地方法，能够在不同的线程调用，因此能够接受不同的JNIEnv
+
+
+
+#### 6.2 动态注册的原理
+- 在Android源码开发环境下，大多采用动态注册native方法。
+    - 利用结构体JNINativeMethod保存Java Native函数和JNI函数的对应关系；
+    - 在一个JNINativeMethod数组中保存所有native函数和JNI函数的对应关系；
+    - 在Java中通过System.loadLibrary加载完JNI动态库之后，调用JNI_OnLoad函数，开始动态注册；
+    - JNI_OnLoad中会调用AndroidRuntime::registerNativeMethods函数进行函数注册；
+    - AndroidRuntime::registerNativeMethods中最终调用jni RegisterNativeMethods完成注册。
+- 动态注册原理分析
+    - RegisterNatives 方式的本质是直接通过结构体指定映射关系，而不是等到调用 native 方法时搜索 JNI 函数指针，因此动态注册的 native 方法调用效率更高。
+    - 此外，还能减少生成 so 库文件中导出符号的数量，则能够优化 so 库文件的体积。
+
+
+
+#### 6.3 注册JNI流程图
+- 提到了注册 JNI 函数（建立 Java native 方法和 JNI 函数的映射关系）有两种方式：静态注册和动态注册。
+    - ![image](https://img-blog.csdnimg.cn/80fba6af41d749e384f63c8d0577d530.png)
+- 分析下静态注册匹配 JNI 函数的执行过程
+    - 第一步：以 loadLibrary() 加载 so 库的执行流程为线索进行分析的，最终定位到 FindNativeMethod() 这个方法。
+    - 第二步：查看`java_vm_ext.cc`中FindNativeMethod方法，然后看到jni_short_name和jni_long_name，获取native方法对应的短名称和长名称。
+    - 第三步：在`java_vm_ext.cc`，通过FindNativeMethodInternal查找已经加载的so库中搜索，先搜索短名称，然后再搜索长名称
+    - 第四步：建立内部数据结构，建立 Java native 方法与 JNI 函数的函数指针的映射关系，调用 native 方法，则直接调用已记录的函数指针。
+
+
+
+
+### 07.JNI遇到的问题
+#### 7.1 混淆的bug
 - 在Android工程中要排除对native方法以及所在类的混淆（java工程不需要），否则要注册的java类和java函数会找不到。proguard-rules.pro中添加。
     ```
     # 设置所有 native 方法不被混淆
@@ -307,7 +355,7 @@
     ```
 
 
-#### 6.2 注意字符串编译
+#### 7.2 注意字符串编译
 - 比如：对于JNI方法来说，使用如下方法返回或者调用直接崩溃了，有点搞不懂原理？
     ```
     env->CallMethod(objCallBack,_methodName,"123");
@@ -322,6 +370,20 @@
     //return "hello";
     return env->NewStringUTF(hello.c_str());
     ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

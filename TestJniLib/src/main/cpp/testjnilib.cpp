@@ -16,7 +16,7 @@ Java_com_yc_testjnilib_NativeLib_stringFromJNI(JNIEnv *env, jobject /* this */) 
     //jobject thiz
     //在AS中自动为我们生成的JNI方法声明都会带一个这样的参数，这个instance就代表Java中native方法声明所在的
     std::string hello = "Hello from C++";
-    
+
     //思考一下，为什么直接返回字符串会出现错误提示？
     //return "hello";
     return env->NewStringUTF(hello.c_str());
@@ -32,7 +32,8 @@ Java_com_yc_testjnilib_NativeLib_getMd5(JNIEnv *env, jobject thiz, jstring str) 
 /**
  * 初始化操作
  */
-__attribute__((section(JNI_SECTION))) JNICALL void initLib(JNIEnv *env, jobject obj, jstring version) {
+__attribute__((section(JNI_SECTION))) JNICALL void
+initLib(JNIEnv *env, jobject obj, jstring version) {
     printf("初始化: 初始化操作1", version);
 }
 
@@ -44,8 +45,8 @@ Java_com_yc_testjnilib_NativeLib_initLib(JNIEnv *env, jobject thiz, jstring vers
 
 
 jstring getNameFromJNI(JNIEnv *env, jobject /* this */) {
-std::string hello = "Hello from C++ , yc lov txy";
-return env->NewStringUTF(hello.c_str());
+    std::string hello = "Hello from C++ , yc lov txy";
+    return env->NewStringUTF(hello.c_str());
 }
 
 
@@ -64,30 +65,30 @@ return env->NewStringUTF(hello.c_str());
  * 第二个参数：方法的签名，括号内为参数类型，后面为返回类型
  * 第三个参数：需要重新注册的方法名
  */
- //研究下JNINativeMethod:
- //JNI允许我们提供一个函数映射表，注册给Java虚拟机，这样JVM就可以用函数映射表来调用相应的函数。
- //这样就可以不必通过函数名来查找需要调用的函数了。
- //Java与JNI通过JNINativeMethod的结构来建立联系，它被定义在jni.h中，其结构内容如下：
- //typedef struct {
- //    const char* name;
- //    const char* signature;
- //    void* fnPtr;
- //} JNINativeMethod;
+//研究下JNINativeMethod:
+//JNI允许我们提供一个函数映射表，注册给Java虚拟机，这样JVM就可以用函数映射表来调用相应的函数。
+//这样就可以不必通过函数名来查找需要调用的函数了。
+//Java与JNI通过JNINativeMethod的结构来建立联系，它被定义在jni.h中，其结构内容如下：
+//typedef struct {
+//    const char* name;
+//    const char* signature;
+//    void* fnPtr;
+//} JNINativeMethod;
 static JNINativeMethod gMethods[] = {
-        {"stringFromJNI", "()Ljava/lang/String;",
-         (void *) Java_com_yc_testjnilib_NativeLib_stringFromJNI
+        {"stringFromJNI",  "()Ljava/lang/String;",
+                (void *) Java_com_yc_testjnilib_NativeLib_stringFromJNI
         },
         {"getNameFromJNI", "()Ljava/lang/String;",
-         (void *) getNameFromJNI
+                (void *) getNameFromJNI
         },
 };
 
-int register_dynamic_Methods(JNIEnv *env){
+int register_dynamic_Methods(JNIEnv *env) {
     std::string s = JNI_CLASS_NAME;
-    const char* className = s.c_str();
+    const char *className = s.c_str();
     // 找到需要动态注册的java类
     jclass clazz = env->FindClass(className);
-    if(clazz == NULL){
+    if (clazz == NULL) {
         return JNI_FALSE;
     }
     //注册JNI方法
@@ -96,7 +97,7 @@ int register_dynamic_Methods(JNIEnv *env){
     //参数2：JNINativeMethod数组。
     //参数3：JNINativeMethod数组的长度，也就是要注册的方法的个数。
     //通过调用RegisterNatives函数将注册函数的Java类，以及注册函数的数组，以及个数注册在一起，这样就实现了绑定。
-    if(env->RegisterNatives(clazz,gMethods,sizeof(gMethods)/sizeof(gMethods[0]))<0){
+    if (env->RegisterNatives(clazz, gMethods, sizeof(gMethods) / sizeof(gMethods[0])) < 0) {
         return JNI_FALSE;
     }
     return JNI_TRUE;
@@ -107,13 +108,32 @@ extern "C"
 //类加载时会调用到这里
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = NULL;
-    if(vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK){
+    //指定JNI版本：告诉VM该组件使用那一个JNI版本(若未提供JNI_OnLoad()函数，VM会默认该使用最老的JNI 1.1版)，
+    //如果要使用新版本的JNI，例如JNI 1.6版，则必须由JNI_OnLoad()函数返回常量JNI_VERSION_1_6(该常量定义在jni.h中) 来告知VM。
+    if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
         return JNI_ERR;
     }
     assert(env != NULL);
-    if(!register_dynamic_Methods(env)){
+    if (!register_dynamic_Methods(env)) {
         return JNI_ERR;
     }
     // 返回JNI使用的版本
     return JNI_VERSION_1_6;
+}
+
+
+//JNI_OnUnload()的作用与JNI_OnLoad()对应，当VM释放JNI组件时会呼叫它，因此在该方法中进行善后清理，资源释放的动作最为合适。
+extern "C"
+JNIEXPORT void JNI_OnUnload(JavaVM *jvm, void *reserved) {
+    JNIEnv *env = NULL;
+    if (jvm->GetEnv((void **) (&env), JNI_VERSION_1_6) != JNI_OK) {
+        return;
+    }
+    std::string s = JNI_CLASS_NAME;
+    const char *className = s.c_str();
+    // 找到需要动态注册的java类
+    jclass clazz = env->FindClass(className);
+    if (clazz != NULL) {
+        env->UnregisterNatives(clazz);
+    }
 }

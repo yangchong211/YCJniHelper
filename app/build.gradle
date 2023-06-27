@@ -48,7 +48,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "com.google.android:flexbox:0.3.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
-    implementation project(':ImageJniLib')
+//    implementation project(':MoonerJniLib')
     implementation project(':CallJniLib')
     implementation project(':TestJniLib')
     implementation project(':SafetyJniLib')
