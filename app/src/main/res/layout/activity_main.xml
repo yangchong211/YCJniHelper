@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
         android:padding="10dp"
-        android:text="1.最简单的jni案例调试"/>
+        android:text="1.TestJni案例，最简单的jni案例调试"/>
 
     <TextView
         android:id="@+id/tv_2"
@@ -28,7 +28,7 @@
         android:background="@color/colorAccent"
         android:layout_marginTop="10dp"
         android:padding="10dp"
-        android:text="2.native层调用Java层的类的字段和方法"/>
+        android:text="2."/>
 
     <TextView
         android:id="@+id/tv_3"
@@ -37,7 +37,7 @@
         android:background="@color/colorAccent"
         android:layout_marginTop="10dp"
         android:padding="10dp"
-        android:text="3."/>
+        android:text="3.CallJni案例，native层调用Java层的类的字段和方法"/>
 
     <TextView
         android:id="@+id/tv_4"

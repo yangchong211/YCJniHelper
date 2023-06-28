@@ -17,7 +17,8 @@ import com.yc.testjnilib.NativeLib;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView tv;
+    private TextView tv2;
+    private TextView tv4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,9 +45,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void init() {
         findViewById(R.id.tv_1).setOnClickListener(this);
-        findViewById(R.id.tv_2).setOnClickListener(this);
         findViewById(R.id.tv_3).setOnClickListener(this);
-        tv = findViewById(R.id.tv_4);
+        tv2 = findViewById(R.id.tv_2);
+        tv4 = findViewById(R.id.tv_4);
     }
 
     @SuppressLint("SetTextI18n")
@@ -59,14 +60,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 NativeLib.getInstance().initLib("db");
                 String stringFromJNI = SafetyJniLib.getInstance().stringFromJNI();
                 String nameFromJNI = NativeLib.getInstance().getNameFromJNI();
-                tv.setText("" + nameFromJNI);
-                break;
-            case R.id.tv_2:
-                CallNativeLib.getInstance().callJavaField("com/yc/calljni/HelloCallBack","name");
-                CallNativeLib.getInstance().callJavaMethod("com/yc/calljni/HelloCallBack","updateName");
+                tv2.setText("java调用c/c++：" + nameFromJNI);
                 break;
             case R.id.tv_3:
-
+                CallNativeLib.getInstance().callJavaField("com/yc/calljni/HelloCallBack","name");
+                CallNativeLib.getInstance().callJavaMethod("com/yc/calljni/HelloCallBack","updateName");
+                tv4.setText("这个就看日志打印");
                 break;
             default:
                 break;

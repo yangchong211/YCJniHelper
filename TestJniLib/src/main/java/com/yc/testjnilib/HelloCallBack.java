@@ -8,7 +8,7 @@ public class HelloCallBack {
 
     void updateName(String name){
         this.name = name;
-        Log.d("TestJni","你成功调用了HelloCallBack的方法：updateName");
+        Log.d("TestJni","你成功调用了HelloCallBack的方法：" + name);
     }
 
 }
