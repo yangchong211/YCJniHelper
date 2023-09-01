@@ -48,4 +48,13 @@
         android:padding="10dp"
         android:text=""/>
 
+    <TextView
+        android:id="@+id/tv_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="5.崩溃收集native日志信息"/>
+
 </LinearLayout>

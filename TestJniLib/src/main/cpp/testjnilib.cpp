@@ -26,16 +26,10 @@ Java_com_yc_testjnilib_NativeLib_stringFromJNI(JNIEnv *env, jobject /* this */) 
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_yc_testjnilib_NativeLib_getMd5(JNIEnv *env, jobject thiz, jstring str) {
-    return env->NewStringUTF("哈哈哈，逗比");
+    std::string stringHello = "哈哈哈哈哈，逗比";
+    return env->NewStringUTF(stringHello.c_str());
 }
 
-/**
- * 初始化操作
- */
-__attribute__((section(JNI_SECTION))) JNICALL void
-initLib(JNIEnv *env, jobject obj, jstring version) {
-    printf("初始化: 初始化操作1", version);
-}
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -75,12 +69,8 @@ jstring getNameFromJNI(JNIEnv *env, jobject /* this */) {
 //    void* fnPtr;
 //} JNINativeMethod;
 static JNINativeMethod gMethods[] = {
-        {"stringFromJNI",  "()Ljava/lang/String;",
-                (void *) Java_com_yc_testjnilib_NativeLib_stringFromJNI
-        },
-        {"getNameFromJNI", "()Ljava/lang/String;",
-                (void *) getNameFromJNI
-        },
+        {"stringFromJNI",  "()Ljava/lang/String;", (void *) Java_com_yc_testjnilib_NativeLib_stringFromJNI},
+        {"getNameFromJNI", "()Ljava/lang/String;", (void *) getNameFromJNI},
 };
 
 int register_dynamic_Methods(JNIEnv *env) {

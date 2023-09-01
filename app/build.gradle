@@ -9,6 +9,9 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        ndk{
+            abiFilters "armeabi-v7a"
+        }
     }
     buildTypes {
         release {
@@ -19,6 +22,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
     }
 
     //列出所有包含有so文件的库信息，主要是找到项目中so库在那个项目文件夹下
@@ -53,6 +62,7 @@ dependencies {
     implementation project(':TestJniLib')
     implementation project(':SafetyJniLib')
     implementation project(':SignalHooker')
+    implementation project(path: ':CrashDumper')
     //implementation project(':EpicJniLib')
 }
 

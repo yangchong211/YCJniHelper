@@ -17,11 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.yc.jnidemo.first.FirstActivity"/>
-        <activity android:name="com.yc.jnidemo.second.SecondActivity"/>
-        <activity android:name="com.yc.jnidemo.second.CardViewActivity"/>
-        <activity android:name="com.yc.jnidemo.second.ShadowViewActivity"/>
-        <activity android:name="com.yc.jnidemo.three.ShadowViewDemo3Activity"/>
+        <activity android:name=".CrashActivity"/>
     </application>
 
 </manifest>

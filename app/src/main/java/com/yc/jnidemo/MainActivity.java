@@ -1,12 +1,14 @@
 package com.yc.jnidemo;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 
 import com.yc.calljni.CallNativeLib;
 import com.yc.safetyjni.SafetyJniLib;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private TextView tv2;
     private TextView tv4;
+    private TextView tv5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.tv_3).setOnClickListener(this);
         tv2 = findViewById(R.id.tv_2);
         tv4 = findViewById(R.id.tv_4);
+        tv5 = findViewById(R.id.tv_5);
+        tv5.setOnClickListener(this);
     }
 
     @SuppressLint("SetTextI18n")
@@ -66,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 CallNativeLib.getInstance().callJavaField("com/yc/calljni/HelloCallBack","name");
                 CallNativeLib.getInstance().callJavaMethod("com/yc/calljni/HelloCallBack","updateName");
                 tv4.setText("这个就看日志打印");
+                break;
+            case R.id.tv_5:
+                startActivity(new Intent(this, CrashActivity.class));
                 break;
             default:
                 break;

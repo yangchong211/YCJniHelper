@@ -38,7 +38,7 @@
 ### 01.学习JNI开发流程
 #### 1.1 JNI开发概念
 - .SO库是什么东西
-    - NDK为了方便使用，提供了一些脚本，使得更容易的编译C/C++代码。在Android程序编译中会将C/C++编译成动态库.so，类似java库.jar文件一样，它的生成需要使用NDK工具来打包。
+    - NDK为了方便使用，提供了一些脚本，使得更容易的编译C/C++代码。在Android程序编译中会将C/C++ 编译成动态库 so 文件，类似java库.jar文件一样，它的生成需要使用NDK工具来打包。
     - so是shared object的缩写，见名思义就是共享的对象，机器可以直接运行的二进制代码。实质so文件就是一堆C、C++的头文件和实现文件打包成一个库。
 - JNI是什么东西
     - JNI的全称是Java Native Interface，即本地Java接口。因为 Java 具备跨平台的特点，所以Java 与 本地代码交互的能力非常弱。
@@ -77,12 +77,13 @@
     - 3.某些情况下为了提高数据安全性，也会封装so来实现。毕竟使用纯Java开发的app是有很多逆向工具可以破解的。
 
 
+
 #### 1.5 学习路线说明
 - JNI学习路线介绍
     - 1.首先要有点C/C++的基础，这个我是在 [菜鸟教程](https://www.runoob.com/cplusplus/cpp-tutorial.html) 上学习的
     - 2.理解NDK和JNI的一些概念，以及NDK的一个大概的架构分层，JNI的开发步骤是怎样的
     - 3.掌握案例练习，前期先写案例，比如java调用c/c++，或者c/c++调用java。把这个案例写熟，跑通即可
-    - 4.案例练习之后，然后在思考NDK是怎么编译的，如何打包so文件，loadLibrary的流程，一些基础的原理
+    - 4.案例练习之后，然后在思考NDK是怎么编译的，如何打包so文件，loadLibrary的流程，CMake工作流程等一些基础的原理
     - 5.在实践过程中，先记录遇到的问题。这时候可能不一定懂，先放着，先实现案例或者简单的业务。然后边实践边琢磨问题和背后的原理
 - 注意事项介绍
     - 避免一开始就研究原理，或者把C/C++整体学习一遍，那样会比较辛苦。焦点先放在JNI通信流程上，写案例学习
@@ -105,7 +106,7 @@
 - Android目前支持以下7种ABI：
     - 1.armeabi：第5代和6代的ARM处理器，早期手机用的比较多。
     - 2.armeabi-v7a:第7代及以上的 ARM 处理器。
-    - 3.arm64-v8a:第8代，64位ARM处理器
+    - 3.arm64-v8a:第8代，64位ARM处理器。
     - 4.x86:一般用在平板，模拟器。
     - 5.x86_64:64位平板。
 - 常规的NDK构建工具有两种：
@@ -114,7 +115,7 @@
 - ndk-build其实就是一个脚本。早期的NDK开发一直都是使用这种模式
     - 运行ndk-build相当于运行一下命令：$GNUMAKE -f <ndk>/build/core/build-local.mk
     - $GNUMAKE 指向 GNU Make 3.81 或更高版本，<ndk> 则指向 NDK 安装目录
-    - 使用ndk-build需要配合两个mk文件：Android.mk和Application.mk。
+    - 使用ndk-build需要配合两个mk文件：Android.mk 和 Application.mk。
 - Cmake是一个编译系统的生成器
     - 简单理解就是，他是用来生成makefile文件的，Android.mk其实就是一个makefile类文件，cmake使用一个CmakeLists.txt的配置文件来生成对应的makefile文件。
     - Cmake构建so的过程其实包括两步：步骤1：使用Cmake生成编译的makefiles文件；步骤2：使用Make工具对步骤1中的makefiles文件进行编译为库或者可执行文件。
