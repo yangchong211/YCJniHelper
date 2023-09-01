@@ -2,20 +2,15 @@ package com.yc.jnidemo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.wsy.crashcatcher.CrashDumper;
-import com.wsy.crashcatcher.HandleMode;
+import com.wsy.crashcatcher.NativeCrashDumper;
+import com.wsy.crashcatcher.NativeHandleMode;
 import com.wsy.crashcatcher.NativeCrashListener;
-import com.yc.jnidemo.R;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -73,21 +68,34 @@ public class CrashActivity extends AppCompatActivity implements RadioGroup.OnChe
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-        HandleMode handleMode;
+        NativeHandleMode handleMode;
         switch (checkedId){
             case R.id.rb_notice_callback:
-                handleMode = HandleMode.NOTICE_CALLBACK;
+                handleMode = NativeHandleMode.NOTICE_CALLBACK;
                 break;
             case R.id.rb_raise_error:
-                handleMode = HandleMode.RAISE_ERROR;
+                handleMode = NativeHandleMode.RAISE_ERROR;
                 break;
             case R.id.rb_do_nothing:
             default:
-                handleMode = HandleMode.DO_NOTHING;
+                handleMode = NativeHandleMode.DO_NOTHING;
                 break;
         }
+//        NativeCrashDumper.init(getFilesDir().getAbsolutePath(), new NativeCrashListener() {
+//            @Override
+//            public void onSignalReceived(int signal, final String logPath) {
+//                final String content = readContentFromFile(logPath);
+//                Log.i(TAG, "onSignalReceived: " + content);
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        tvCrashLog.setText(content);
+//                    }
+//                });
+//            }
+//        }, nativeHandleMode);
 
-        CrashDumper.init(getFilesDir().getAbsolutePath(), new NativeCrashListener() {
+        NativeCrashDumper.getInstance().init(getFilesDir().getAbsolutePath(), new NativeCrashListener() {
             @Override
             public void onSignalReceived(int signal, final String logPath) {
                 final String content = readContentFromFile(logPath);

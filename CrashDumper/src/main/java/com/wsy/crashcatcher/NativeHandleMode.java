@@ -3,7 +3,7 @@ package com.wsy.crashcatcher;
 /**
  * 捕获信号，记录日志后的处理方式
  */
-public enum HandleMode {
+public enum NativeHandleMode {
     /**
      * 什么都不做
      */
@@ -19,7 +19,7 @@ public enum HandleMode {
 
     int mode;
 
-    HandleMode(int mode) {
+    NativeHandleMode(int mode) {
         this.mode = mode;
     }
 }

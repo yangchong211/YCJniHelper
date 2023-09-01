@@ -7,7 +7,6 @@
 #include <unwind.h>
 #include <dlfcn.h>
 #include "stack_tracer.h"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,"wsy_testjni_crash_dumper" ,__VA_ARGS__)
 
 
 JavaVM *g_vm;
@@ -351,7 +350,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (env == NULL) {
         return JNI_ERR;
     }
-    jclass crashDumperClazz = env->FindClass("com/wsy/crashcatcher/CrashDumper");
+    jclass crashDumperClazz = env->FindClass("com/wsy/crashcatcher/NativeCrashDumper");
     JNINativeMethod jniNativeMethod[] = {
             {"nativeInit", "(Ljava/lang/String;Lcom/wsy/crashcatcher/NativeCrashListener;I)V", (void *) nativeInit}
     };
