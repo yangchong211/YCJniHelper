@@ -1,4 +1,4 @@
-package com.yc.crashcatcher;
+package com.yc.crash;
 
 
 

@@ -1,4 +1,4 @@
-package com.yc.crashcatcher;
+package com.yc.crash;
 
 /**
  * 捕获信号，记录日志后的处理方式

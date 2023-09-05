@@ -25,6 +25,10 @@ jobject g_crashListener = NULL;
 
 static int handleMode = HANDLE_MODE_DO_NOTHING;
 
+/**
+ * 代表信号量，可以是除 SIGKILL 和 SIGSTOP 外的任何一个特定有效的信号量，SIGKILL和SIGSTOP既不能被捕捉，也不能被忽略。
+ * 同一个信号在不同的系统中值可能不一样，所以建议最好使用为信号定义的名字。
+ */
 static int signals[SIGNAL_COUNT] = {
         SIGTRAP,
         SIGABRT,
@@ -59,13 +63,11 @@ static std::map<int, const char *> si_names = {
         {SI_ASYNCNL,  "SI_ASYNCNL"}
 };
 
-void noticeCallback(int signal,std::string logPath);
+void noticeCallback(int signal, std::string logPath);
 
 JNIEnv *attachEnv(bool *handAttached);
 
 void detachEnv(JNIEnv *env, bool byAttach);
-
-
 
 
 std::string getRegisterInfo(const ucontext_t *ucontext);
@@ -106,19 +108,31 @@ const char *getABI() {
 #endif
 }
 
+
+// 获取header信息
 std::string getHeaderInfo() {
+    //Build fingerprint
+    //读取系统的ro.build.fingerprint字段信息即可
     char finger[92] = {0};
     __system_property_get("ro.build.fingerprint", finger);
     if (strlen(finger) == 0) {
         strcpy(finger, "unknown");
     }
+
+    //revision
+    //读取系统的ro.revision字段信息即可
     char revision[92] = {0};
     __system_property_get("ro.revision", revision);
     if (strlen(revision) == 0) {
         strcpy(revision, "unknown");
     }
+
+    //abi
+    //我们可以读取so中的内容判断，也可以在编译期就进行判断，这里选择在编译期判断
     const char *abi = getABI();
     char result[256] = {0};
+
+
     sprintf(result,
             "Build fingerprint: '%s'\r\nRevision: '%s'\r\nABI: '%s'",
             finger, revision, abi);
@@ -133,6 +147,11 @@ void unregisterSigHandler() {
     memset(g_oldSigActions, 0, sizeof(g_oldSigActions));
 }
 
+/**
+ * 获取进程名称
+ * @param pid           进程号
+ * @return
+ */
 std::string get_process_name_by_pid(const int pid) {
     char processName[256] = {0};
     char cmd[64] = {0};
@@ -156,7 +175,8 @@ void sigHandler(int sig, siginfo_t *info, void *context) {
             .append("Timestamp: ").append(getCrashTimeStamp()).append("\r\n")
             .append("pid: ").append(std::to_string(info->_sifields._kill._pid))
             .append(", uid: ").append(std::to_string(info->_sifields._kill._uid))
-            .append(", process: >>> ").append(get_process_name_by_pid(info->_sifields._kill._pid)).append(" <<<\r\n")
+            .append(", process: >>> ").append(
+                    get_process_name_by_pid(info->_sifields._kill._pid)).append(" <<<\r\n")
             .append("signal ").append(std::to_string(sig)).append(" (").append(signal_names[sig])
             .append("), code ").append(std::to_string(info->si_code))
             .append(" (").append(si_names[info->si_code])
@@ -261,6 +281,10 @@ std::string getRegisterInfo(const ucontext_t *ucontext) {
 #endif
     return ctxTxt;
 }
+
+/**
+ * 注册信号处理函数
+ */
 void registerSigHandler() {
     // create new actions
     struct sigaction newSigAction;
@@ -272,6 +296,10 @@ void registerSigHandler() {
     // set new action for each signal, and save old actions
     memset(g_oldSigActions, 0, sizeof(g_oldSigActions));
     for (int i = 0; i < SIGNAL_COUNT; ++i) {
+        //进程通过 sigaction() 函数来指定对某个信号的处理行为。
+        //sig：代表信号量，可以是除 SIGKILL 和 SIGSTOP 外的任何一个特定有效的信号量，SIGKILL和SIGSTOP既不能被捕捉，也不能被忽略。同一个信号在不同的系统中值可能不一样，所以建议最好使用为信号定义的名字。
+        //new_action：指向结构体 sigaction 的一个实例的指针，该实例指定了对特定信号的处理，如果设置为空，进程会执行默认处理。
+        //old_action：和参数 new_action 类似，只不过保存的是原来对相应信号的处理，也可设置为 NULL。
         sigaction(signals[i], &newSigAction, &g_oldSigActions[i]);
     }
 }
@@ -300,6 +328,7 @@ void nativeInit(JNIEnv *env, jobject clazz,
     strcpy(tombstone_file_path, crashDumpDir);
     env->ReleaseStringUTFChars(crash_dump_dir, crashDumpDir);
 
+    //注册信号处理函数
     registerSigHandler();
 }
 
@@ -350,9 +379,10 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (env == NULL) {
         return JNI_ERR;
     }
-    jclass crashDumperClazz = env->FindClass("com/yc/crashcatcher/NativeCrashDumper");
+    jclass crashDumperClazz = env->FindClass("com/yc/crash/NativeCrashDumper");
     JNINativeMethod jniNativeMethod[] = {
-            {"nativeInit", "(Ljava/lang/String;Lcom/yc/crashcatcher/NativeCrashListener;I)V", (void *) nativeInit}
+            {"nativeInit", "(Ljava/lang/String;Lcom/yc/crash/NativeCrashListener;I)V",
+             (void *) nativeInit}
     };
     if (env->RegisterNatives(crashDumperClazz, jniNativeMethod,
                              sizeof(jniNativeMethod) / sizeof((jniNativeMethod)[0])) < 0) {

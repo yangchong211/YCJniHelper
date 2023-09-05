@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.yc.crashcatcher.NativeCrashDumper;
-import com.yc.crashcatcher.NativeHandleMode;
-import com.yc.crashcatcher.NativeCrashListener;
+import com.yc.crash.NativeCrashDumper;
+import com.yc.crash.NativeHandleMode;
+import com.yc.crash.NativeCrashListener;
 
 import java.io.FileInputStream;
 import java.io.IOException;
