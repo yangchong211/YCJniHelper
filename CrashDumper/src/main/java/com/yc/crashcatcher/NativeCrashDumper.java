@@ -1,4 +1,4 @@
-package com.wsy.crashcatcher;
+package com.yc.crashcatcher;
 
 
 
@@ -6,23 +6,18 @@ import java.io.File;
 
 public class NativeCrashDumper {
 
-    private static NativeCrashDumper instance;
-
     static {
         //java.lang.UnsatisfiedLinkError: dalvik.system.PathClassLoader[DexPathList
         //couldn't find "libcrash_dumper.so"
         System.loadLibrary("crash_dumper");
     }
 
+    private static final class InstanceHolder {
+        static final NativeCrashDumper instance = new NativeCrashDumper();
+    }
+
     public static NativeCrashDumper getInstance() {
-        if (instance == null) {
-            synchronized (NativeCrashDumper.class) {
-                if (instance == null) {
-                    instance = new NativeCrashDumper();
-                }
-            }
-        }
-        return instance;
+        return InstanceHolder.instance;
     }
 
     private native void nativeInit(String crashDumpDir,
@@ -40,4 +35,5 @@ public class NativeCrashDumper {
         }
         return false;
     }
+
 }

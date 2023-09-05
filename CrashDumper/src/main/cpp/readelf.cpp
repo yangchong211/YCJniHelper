@@ -4,7 +4,7 @@
 #include <string>
 #include <android/log.h>
 
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,"wsy_testjni_readelf" ,__VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,"yc_testjni_readelf" ,__VA_ARGS__)
 
 #define SEC_NAME_BUILD_ID ".note.gnu.build-id"
 

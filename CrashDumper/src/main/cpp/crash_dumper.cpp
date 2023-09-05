@@ -276,7 +276,7 @@ void registerSigHandler() {
     }
 }
 
-void nativeInit(JNIEnv *env, jclass clazz,
+void nativeInit(JNIEnv *env, jobject clazz,
                 jstring crash_dump_dir,
                 jobject crash_listener,
                 jint handle_mode) {
@@ -350,9 +350,9 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (env == NULL) {
         return JNI_ERR;
     }
-    jclass crashDumperClazz = env->FindClass("com/wsy/crashcatcher/NativeCrashDumper");
+    jclass crashDumperClazz = env->FindClass("com/yc/crashcatcher/NativeCrashDumper");
     JNINativeMethod jniNativeMethod[] = {
-            {"nativeInit", "(Ljava/lang/String;Lcom/wsy/crashcatcher/NativeCrashListener;I)V", (void *) nativeInit}
+            {"nativeInit", "(Ljava/lang/String;Lcom/yc/crashcatcher/NativeCrashListener;I)V", (void *) nativeInit}
     };
     if (env->RegisterNatives(crashDumperClazz, jniNativeMethod,
                              sizeof(jniNativeMethod) / sizeof((jniNativeMethod)[0])) < 0) {

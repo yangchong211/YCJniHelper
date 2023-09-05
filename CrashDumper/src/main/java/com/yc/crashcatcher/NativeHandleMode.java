@@ -1,4 +1,4 @@
-package com.wsy.crashcatcher;
+package com.yc.crashcatcher;
 
 /**
  * 捕获信号，记录日志后的处理方式
@@ -17,7 +17,7 @@ public enum NativeHandleMode {
      */
     NOTICE_CALLBACK(2);
 
-    int mode;
+    final int mode;
 
     NativeHandleMode(int mode) {
         this.mode = mode;

@@ -9,8 +9,6 @@
 #include <ctime>
 #include <map>
 
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,"wsy_testjni_stack_tracer" ,__VA_ARGS__)
-
 typedef struct TraceInfo {
     int depth;
     std::string result;

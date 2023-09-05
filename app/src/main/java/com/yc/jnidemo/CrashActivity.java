@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.wsy.crashcatcher.NativeCrashDumper;
-import com.wsy.crashcatcher.NativeHandleMode;
-import com.wsy.crashcatcher.NativeCrashListener;
+import com.yc.crashcatcher.NativeCrashDumper;
+import com.yc.crashcatcher.NativeHandleMode;
+import com.yc.crashcatcher.NativeCrashListener;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -81,21 +81,7 @@ public class CrashActivity extends AppCompatActivity implements RadioGroup.OnChe
                 handleMode = NativeHandleMode.DO_NOTHING;
                 break;
         }
-//        NativeCrashDumper.init(getFilesDir().getAbsolutePath(), new NativeCrashListener() {
-//            @Override
-//            public void onSignalReceived(int signal, final String logPath) {
-//                final String content = readContentFromFile(logPath);
-//                Log.i(TAG, "onSignalReceived: " + content);
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        tvCrashLog.setText(content);
-//                    }
-//                });
-//            }
-//        }, nativeHandleMode);
-
-        NativeCrashDumper.getInstance().init(getFilesDir().getAbsolutePath(), new NativeCrashListener() {
+        boolean init = NativeCrashDumper.getInstance().init(getFilesDir().getAbsolutePath(), new NativeCrashListener() {
             @Override
             public void onSignalReceived(int signal, final String logPath) {
                 final String content = readContentFromFile(logPath);
