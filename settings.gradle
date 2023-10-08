@@ -1,4 +1,4 @@
-include ':app'
+include ':AppJni'
 include ':demo'
 include ':CallJniLib'
 //include ':MoonerJniLib'
